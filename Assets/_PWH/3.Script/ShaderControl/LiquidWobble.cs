@@ -1,12 +1,12 @@
-using Unity.VisualScripting;
+using UnityEditor.Search;
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
 public class LiquidWobble : MonoBehaviour
 {
     public float maxWobble = 0.03f;
-    public float wobbleSpeed = 1f;
-    public float recovery = 1f;
+    [Range(0,5), SerializeField] float wobbleSpeed = 1f;
+    [Range(0,5), SerializeField] float recovery = 1f;
     private float wobbleAmountX;
     private float wobbleAmountZ;
 
