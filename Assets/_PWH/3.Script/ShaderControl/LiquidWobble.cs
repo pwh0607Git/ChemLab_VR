@@ -45,9 +45,6 @@ public class LiquidWobble : MonoBehaviour
 
         wobbleAmountX = wobbleAmountToAddX * Mathf.Sin(pulse * time);
         wobbleAmountZ = wobbleAmountToAddZ * Mathf.Sin(pulse * time);
-
-
-        Debug.Log($"X : {wobbleAmountX}, Z : {wobbleAmountZ}");
         
         rend.material.SetFloat("_WobbleX", wobbleAmountX);
         rend.material.SetFloat("_WobbleZ", wobbleAmountZ);
