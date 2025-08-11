@@ -33,7 +33,6 @@ public class SFXManager : BehaviourSingleton<SFXManager>
     }
 
     [Button("TestSpawnSFX"), HideField] public bool b1;
-
     public void TestSpawnSFX()
     {
         SpawnSFX(ClipFlag.Test1, Vector3.zero, null);

@@ -31,14 +31,13 @@ public class VFX : PoolBehaviour
     {
         if (particle.isStopped) return;
         particle.Stop();
-        Despawn();
     }
 
     void Update()
     {
-        // 단발성 
         if (particle.isStopped)
         {
+            Debug.Log($"{gameObject.name} : Stop");
             Despawn();
         }
     }

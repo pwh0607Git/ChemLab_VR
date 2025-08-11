@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CustomInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -34,5 +35,33 @@ public class VFXManager : BehaviourSingleton<VFXManager>
         vfx.SetLoop(isLoop);
 
         return returnVfx as VFX;
+    }
+
+
+    [Header("VFX 출력 Tester")]
+    public VFXFlag testFlag;
+    [Space2(20)]
+    [Button("TestSpawnVFX"), HideField] public bool b1;
+    [Button("StopTestVFX"), HideField] public bool b2;
+    [Space2(20)]
+    
+    [SerializeField, ReadOnly] private VFX testVFX;
+
+    public void TestSpawnVFX()
+    {
+        if (testVFX != null)
+        {
+        testVFX.Stop();
+            testVFX = null;
+        }
+
+        testVFX = SpawnVFX(testFlag, transform.position, Quaternion.identity, transform, false);
+    }
+
+
+    public void StopTestVFX()
+    {
+        if (testVFX == null) return;
+        testVFX.Stop();
     }
 }
