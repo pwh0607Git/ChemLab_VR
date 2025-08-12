@@ -4,6 +4,9 @@ public class Liquid : MonoBehaviour
 {
     [SerializeField] private Transform head;
 
+    [Header("Pour Angle")]
+    public float angleThreshold = 150f;
+
     [Header("Flag")]
     private bool isGrab;
     [SerializeField] private bool isPour;
@@ -13,6 +16,9 @@ public class Liquid : MonoBehaviour
     {
         isGrab = false;
         isPour = false;
+
+        pour = VFXManager.Instance.SpawnVFX(VFXFlag.LiquidPour, Vector3.zero, Quaternion.Euler(Vector3.zero), head, true);
+        pour.Stop(); // 시작할 때는 꺼둡니다.
     }
 
     void OnDisable()
@@ -25,21 +31,20 @@ public class Liquid : MonoBehaviour
 
     void Update()
     {
-        if (isPour)
+        float angle = Vector3.Angle(head.up, Vector3.up);
+
+        if (angle > angleThreshold)
         {
-            if (pour == null)
-            {
-                pour = VFXManager.Instance.SpawnVFX(VFXFlag.LiquidPour, Vector3.zero, Quaternion.Euler(Vector3.zero), head, true);  
-                pour.Play();
-            }
+            isPour = true;
         }
         else
         {
-            if (pour != null)
-            {
-                pour.Stop();
-                pour = null;
-            }
+            isPour = false;
         }
+        
+        if (isPour)
+            pour.Play();
+        else
+            pour.Stop();
     }
 }
