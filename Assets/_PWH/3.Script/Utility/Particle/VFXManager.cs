@@ -9,6 +9,11 @@ public enum VFXFlag
 {
     LiquidPour,
     Pot,
+    FlameFx,
+    FlameFx2,
+    Flame,
+    Smoke,
+    Ash
 }
 
 [Serializable]
@@ -32,6 +37,7 @@ public class VFXManager : BehaviourSingleton<VFXManager>
         if (vfx == null) return null;
 
         var returnVfx = PoolManager.Instance.Spawn(vfx, position, rot, parent);
+
         vfx.SetLoop(isLoop);
 
         return returnVfx as VFX;
