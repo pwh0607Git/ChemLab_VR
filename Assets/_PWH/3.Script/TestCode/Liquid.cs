@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class Liquid : MonoBehaviour
 {
+    [SerializeField] private Transform head;
+
+    [Header("Flag")]
     private bool isGrab;
     [SerializeField] private bool isPour;
-    [SerializeField] private Transform head;
-    VFX pour;
+    private VFX pour;
 
     void Start()
     {
@@ -15,6 +17,8 @@ public class Liquid : MonoBehaviour
 
     void OnDisable()
     {
+        if (pour == null) return;
+        
         pour.Despawn();  
         pour = null;
     }

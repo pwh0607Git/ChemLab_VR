@@ -14,8 +14,17 @@ public class SFX : PoolBehaviour
         audio.clip = clip;
         audio.spatialBlend = spatial;
         gameObject.transform.position = position;
-
         audio.Play();
+    }
+
+    public void Play()
+    {
+        audio.Play();
+    }
+
+    public void Stop()
+    {
+        audio.Stop();
     }
 
     // 단발성.
@@ -23,6 +32,7 @@ public class SFX : PoolBehaviour
     {
         if (!audio.isPlaying)
         {
+            Debug.Log($"{gameObject.name} : Stop");
             Despawn();
         }
     }
