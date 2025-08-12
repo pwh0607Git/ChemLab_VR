@@ -58,7 +58,6 @@ public class VFXManager : BehaviourSingleton<VFXManager>
         testVFX = SpawnVFX(testFlag, transform.position, Quaternion.identity, transform, false);
     }
 
-
     public void StopTestVFX()
     {
         if (testVFX == null) return;
