@@ -6,16 +6,16 @@ public class FeedPowderEmitter : MonoBehaviour
     public ParticleSystem powderParticle;
 
     [Header("기울기 임계값")]
-    public float angleThreshold = 60; // 몇도 이상 기울이면 쏟아짐
+    public float angleThreshold = 60f;
 
     [Header("쏟은 시간")]
     public float pourDuration = 0f;
 
     private bool isPouring = false;
+    public bool IsPouring => isPouring; // 외부에서 읽을 수 있는 프로퍼티
 
-    private void Update()
+    void Update()
     {
-        // 현재 오브젝트의 위쪽 방향과 월드 위쪽 방향 간의 각도
         float angle = Vector3.Angle(transform.up, Vector3.up);
 
         if (angle > angleThreshold)
