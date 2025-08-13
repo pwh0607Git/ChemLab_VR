@@ -1,11 +1,15 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class BurnDownWick : MonoBehaviour
 {
     [Header("타들어갈 대상")]
     public Transform wickPivot;
+
+    [Header("심지 전체 루트(비활성화)")]
+    public GameObject wickVisualRoot;
 
     [Header("불 파티클 루트(심지 끝에 자식으로 배치")]
     public Transform flameRoot;
@@ -23,6 +27,8 @@ public class BurnDownWick : MonoBehaviour
     Vector3 _wickInitScale;
     Vector3 _flameInitScale;
     bool _running;
+    Collider[] _colliders;
+    XRBaseInteractable _grab;
 
     private void Awake()
     {
@@ -62,17 +68,28 @@ public class BurnDownWick : MonoBehaviour
             float k = Mathf.Clamp01(t / burnDuration);
             float f = 1f - burnCurve.Evaluate(k);
 
+            // 심지 축소
             wickPivot.localScale = new Vector3(_wickInitScale.x, _wickInitScale.y * f, _wickInitScale.z);
 
+            // 불 파티클 크기도 따라감
             if (scaleFlameWithWick && flameRoot)
                 flameRoot.localScale = _flameInitScale * Mathf.Clamp(f, 0.001f, 1f);
 
             yield return null;
         }
+
+        // 불 끄기
         if(ignitable != null)
         {
             ignitable.Extinguish();
         }
+
+        if (_colliders != null)
+            foreach (var c in _colliders) c.enabled = false;
+        if (_grab) _grab.enabled = false;
+
+        if (wickVisualRoot) wickVisualRoot.SetActive(false);
+
         _running = false;
         
     }

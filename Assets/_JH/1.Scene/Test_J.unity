@@ -167,6 +167,10 @@ MonoBehaviour:
     vfx: {fileID: -1488577032164151563, guid: 207a8e8b536f8244daa233e5141485b9, type: 3}
   - flag: 6
     vfx: {fileID: -309973955507120959, guid: 4d66173b4672b274887dbb184f5ff454, type: 3}
+  testFlag: 0
+  b1: 0
+  b2: 0
+  testVFX: {fileID: 0}
 --- !u!4 &73592823
 Transform:
   m_ObjectHideFlags: 0
@@ -628,6 +632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wickPivot: {fileID: 1580212504}
+  wickVisualRoot: {fileID: 339850004}
   flameRoot: {fileID: 459613143}
   scaleFlameWithWick: 1
   ignitable: {fileID: 339850011}
@@ -746,8 +751,8 @@ Transform:
   m_GameObject: {fileID: 536265743}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.03, z: 0.15}
+  m_LocalPosition: {x: 0, y: 0.061, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2053956953}
@@ -1059,6 +1064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ignitable: {fileID: 339850011}
+  burnRef: {fileID: 339850012}
   centerPoint: {fileID: 633447019}
   ashHeap: {fileID: 2053956953}
   ashMesh: {fileID: 536265744}
@@ -1071,8 +1077,8 @@ MonoBehaviour:
   warmup: 3
   eruptionDuration: 4
   smolderDuration: 3
-  targetScaleXZ: {x: 0.9, y: 0.9}
-  targetHeight: 0.35
+  targetScaleXZ: {x: 0.7, y: 0.7}
+  targetHeight: 0.25
   growthCurve:
     serializedVersion: 2
     m_Curve:
@@ -1098,6 +1104,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   smooth: 8
+  keepAshMeshAtEnd: 1
 --- !u!1 &739240102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,7 +1271,7 @@ Transform:
   m_GameObject: {fileID: 1326015379}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.119, z: 0}
+  m_LocalPosition: {x: 0, y: 1.082, z: 0}
   m_LocalScale: {x: 0.16666664, y: 0.066666655, z: 0.16666664}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2598,7 +2605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heap: {fileID: 1326015380}
   secondsForFull: 5
-  radiusRange: {x: 0.08, y: 0.3}
+  radiusRange: {x: 0.1, y: 0.5}
   heightRange: {x: 0.01, y: 0.04}
   smooth: 8
   coverThreshold01: 0.3
@@ -2930,7 +2937,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.526, z: 0}
-  m_LocalScale: {x: 0.42, y: 0.13, z: 0.42}
+  m_LocalScale: {x: 0.5, y: 0.13, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 643448413}
