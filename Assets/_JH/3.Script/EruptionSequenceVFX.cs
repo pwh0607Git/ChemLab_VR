@@ -7,6 +7,9 @@ public class EruptionSequenceVFX : MonoBehaviour
     [Header("트리거 소스")]
     public WickIgnitable ignitable;
 
+    [Header("심지 타는 시간 참조")]
+    public BurnDownWick burnRef;
+
     [Header("기준/더미")]
     public Transform centerPoint; // 분출 위치 기준
     public Transform ashHeap;
@@ -28,10 +31,13 @@ public class EruptionSequenceVFX : MonoBehaviour
     public float smolderDuration = 3.0f; // 잔연기 시간
 
     [Header("재 더미 성장")]
-    public Vector2 targetScaleXZ = new Vector2(0.9f, 0.9f);
-    public float targetHeight = 0.35f;
+    public Vector2 targetScaleXZ = new Vector2(0.4f, 0.4f);
+    public float targetHeight = 0.15f;
     public AnimationCurve growthCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     public float smooth = 8f;
+
+    [Header("옵션")]
+    public bool keepAshMeshAtEnd = true;  // 끝나도 메쉬 유지
 
     // 내부 상태
     Vector3 _heapInitScale, _meshInitScale;
@@ -70,6 +76,14 @@ public class EruptionSequenceVFX : MonoBehaviour
         _heapInitScale = ashHeap.localScale;
         _meshInitScale = ashMesh ? ashMesh.localScale : Vector3.one;
 
+        ashMesh.localScale = Vector3.zero;
+        // 시작 시에는 보이지 않게
+        if (ashMesh) 
+        { 
+            ashMesh.localScale = Vector3.zero;
+            ashMesh.gameObject.SetActive(false);
+        }
+
         StartCoroutine(CoErupt());
     }
 
@@ -78,7 +92,11 @@ public class EruptionSequenceVFX : MonoBehaviour
         _running = true;
 
         // 0) 예열
-        if (warmup > 0f) yield return new WaitForSeconds(warmup);
+        float delay = burnRef ? burnRef.burnDuration : warmup;
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+
+        // 더미 보이게 전환
+        if (ashMesh) ashMesh.gameObject.SetActive(true);
 
         // 1) VFX 스폰
         VFX flame = null, smoke = null, ash = null;
@@ -101,9 +119,9 @@ public class EruptionSequenceVFX : MonoBehaviour
         }
 
         // 2) 분출 : 더미 성장
-        float t = 0f;
         var target = new Vector3(targetScaleXZ.x, targetHeight, targetScaleXZ.y);
 
+        float t = 0f;
         while ( t< eruptionDuration)
         {
             t += Time.deltaTime;
@@ -112,7 +130,12 @@ public class EruptionSequenceVFX : MonoBehaviour
 
             var desired = Vector3.Lerp(_heapInitScale, target, g);
             ashHeap.localScale = Vector3.Lerp(ashHeap.localScale, desired, Time.deltaTime * smooth);
-
+           
+            if(ashMesh)
+            {
+                var desiredMesh = Vector3.Lerp(_meshInitScale, target, g);
+                ashMesh.localScale = Vector3.Lerp(ashMesh.localScale, desiredMesh, Time.deltaTime * smooth);
+            }
             yield return null;
         }
 
@@ -124,6 +147,12 @@ public class EruptionSequenceVFX : MonoBehaviour
         if (flame) flame.Stop();
         if (ash) ash.Stop();
         if (smoke) smoke.Stop();
+
+        if(!keepAshMeshAtEnd)
+        {
+            if (ashMesh) ashMesh.gameObject.SetActive(false);
+            ashHeap.localScale = _heapInitScale;
+        }
 
         _running = false;
     }
