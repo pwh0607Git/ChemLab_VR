@@ -26,11 +26,11 @@ public class GrabbableTutorialHint : MonoBehaviour
         isSelected = true;
         if (data != null)
         {
-            TutorialDirector.Instance?.ShowTutorial(data.persistWhileHeld: true);
+            TutorialDirector.Instance?.ShowTutorial(data, persistWhileHeld : true);
         }
     }
 
-    private void OnSelectExited(SelectEnterEventArgs args)
+    private void OnSelectExited(SelectExitEventArgs args)
     {
         isSelected = false;
         TutorialDirector.Instance?.HideTutorial();

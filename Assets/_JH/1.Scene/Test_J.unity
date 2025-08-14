@@ -1387,7 +1387,7 @@ MonoBehaviour:
   torchFlameFlag: 3
   vfxAnchor: {fileID: 1965960763}
   loopFlame: 1
-  toggleFlameAction: {fileID: 0}
+  toggleFlameAction: {fileID: 4806770101535410126, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!114 &1461435869
 MonoBehaviour:
   m_ObjectHideFlags: 0

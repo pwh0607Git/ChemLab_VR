@@ -41,12 +41,6 @@ public class TorchFlameController : MonoBehaviour
         IsOn = false;
     }
 
-    private void Update()
-    {
-        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
-            Toggle();
-    }
-
     void OnTogglePerformed(InputAction.CallbackContext _)
     {
         Toggle();
