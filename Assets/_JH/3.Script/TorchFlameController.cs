@@ -16,9 +16,18 @@ public class TorchFlameController : MonoBehaviour
     // 스폰된 불 VFX 인스턴스
     private VFX _flameVfx;
 
+    void Start()
+    {
+        if (toggleFlameAction != null)
+        {
+            toggleFlameAction.action.performed += OnTogglePerformed;
+            toggleFlameAction.action.Enable();
+        }   
+    }
+
     private void OnEnable()
     {
-        if(toggleFlameAction != null)
+        if (toggleFlameAction != null)
         {
             toggleFlameAction.action.performed += OnTogglePerformed;
             toggleFlameAction.action.Enable();
