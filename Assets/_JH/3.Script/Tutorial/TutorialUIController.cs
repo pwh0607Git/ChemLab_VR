@@ -21,7 +21,7 @@ public class TutorialUIController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!visible || followTarget = null) return;
+        if (!visible || followTarget == null) return;
 
         // 위치/ 회전 (카메라 정면)
         Vector3 targetPos = followTarget.position + followTarget.forward * distance + Vector3.up * verticalOffset;
@@ -54,6 +54,13 @@ public class TutorialUIController : MonoBehaviour
     public IEnumerator HideAfter(float sec)
     {
         yield return new WaitForSeconds(sec);
-        Hide
+        HideNow();
+    }
+
+    public void HideNow()
+    {
+        visible = false;
+        rootCanvas.enabled = false;
+        followTarget = null;
     }
 }
