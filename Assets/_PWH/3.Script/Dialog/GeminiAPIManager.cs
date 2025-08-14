@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using CustomInspector;
 using Firebase;
 using Firebase.AI;
@@ -8,7 +6,7 @@ using UnityEngine;
 
 public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
 {
-    protected override bool IsDontDestroy() => false;
+    protected override bool IsDontDestroy() => true;
 
     [SerializeField, ReadOnly] private GenerativeModel model;
     [SerializeField, ReadOnly] private Chat chatSession;
