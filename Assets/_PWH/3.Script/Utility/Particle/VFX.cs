@@ -27,19 +27,10 @@ public class VFX : PoolBehaviour
         particle.Play();
     }
 
+    // 주로 Loop에서 멈출때 사용
     public void Stop()
     {
         if (particle.isStopped) return;
         particle.Stop();
-        Despawn();
-    }
-
-    void Update()
-    {
-        // 단발성 
-        if (particle.isStopped)
-        {
-            Despawn();
-        }
     }
 }
