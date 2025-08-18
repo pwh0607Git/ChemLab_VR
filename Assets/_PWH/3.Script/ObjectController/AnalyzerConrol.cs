@@ -21,7 +21,6 @@ public class AnalyzerConrol : SoketPlace
         Sequence aSeq = DOTween.Sequence();
 
         aSeq.AppendInterval(0.3f)
-            .AppendCallback(() => b.SetGrabable(false))
             .AppendInterval(analyzeTime)
             .AppendCallback(() =>
             {
