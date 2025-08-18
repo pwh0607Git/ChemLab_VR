@@ -1,3 +1,4 @@
+using System;
 using CustomInspector;
 using Firebase;
 using Firebase.AI;
@@ -14,7 +15,9 @@ public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
     [Header("Input Part")]
     [SerializeField] string inputMessage;
 
-    [Button("SendMessage"), HideField] public bool sendBtn1;
+    [Header("Prompt DB")]
+    [SerializeField] APIConversation conversation;
+
     public void SendMessage()
     {
         SendMessage(inputMessage);
@@ -46,7 +49,7 @@ public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
         });
     }
 
-    public async void SendMessage(string userMessage)
+    public async void SendMessage(string intent)
     {
         if (chatSession == null)
         {
@@ -54,8 +57,10 @@ public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
             return;
         }
 
+        string prompt = conversation.prompts.Find(p => p.intent.Equals(intent)).prompt;
+
         // 사용자의 메시지를 보내고 응답을 받습니다.
-        var response = await chatSession.SendMessageAsync(userMessage);
+        var response = await chatSession.SendMessageAsync(prompt);
 
         // 응답 텍스트를 출력합니다.
         Debug.Log($"Gemini 응답: {response.Text}");
