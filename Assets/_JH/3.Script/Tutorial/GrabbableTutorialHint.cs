@@ -5,8 +5,11 @@ public class GrabbableTutorialHint : MonoBehaviour
 {
     public TutorialItemData data;
 
+
+    [Header("잡은 뒤에도 계속 표시)")]
+    public bool stickyMode = true; // true면 놓아도 UI 유지
+
     private XRGrabInteractable grab;
-    private bool isSelected;
 
     private void Awake()
     {
@@ -23,17 +26,19 @@ public class GrabbableTutorialHint : MonoBehaviour
 
     private void OnSelectEntered(SelectEnterEventArgs args)
     {
-        isSelected = true;
+
+        Debug.Log($"[Tutorial] SelectEntered: {name}, data={(data ? data.displayName : "null")}");
         if (data != null)
         {
-            TutorialDirector.Instance?.ShowTutorial(data, persistWhileHeld : true);
+            if(data) TutorialDirector.Instance?.ShowTutorial(data, persistWhileHeld : true);
         }
     }
 
     private void OnSelectExited(SelectExitEventArgs args)
     {
-        isSelected = false;
-        TutorialDirector.Instance?.HideTutorial();
+
+        Debug.Log($"[Tutorial] SelectExited: {name}");
+        if (!stickyMode) TutorialDirector.Instance?.HideTutorial();
     }
 }
 

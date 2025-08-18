@@ -1,66 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
+// TutorialUIControllerStaticTMP.cs
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
+using System.Text;
 
-public class TutorialUIController : MonoBehaviour
+public class TutorialUIControllerStaticTMP : MonoBehaviour
 {
-    public Canvas rootCanvas;
-    public Text titleText;
-    public Text descText;
-    public Text stepsText;
+    public Canvas rootCanvas;                    // World Space
+    public TMP_Text titleText, descText, stepsText;
     public Image iconImage;
 
-    [Header("배치 옵션")]
-    public float distance = 0.9f;
-    public float verticalOffset = -0.1f;
-    public float followSlerp = 12f;
+    private CanvasGroup cg;
 
-    private Transform followTarget;
-    private bool visible;
-
-    private void LateUpdate()
+    void Awake()
     {
-        if (!visible || followTarget == null) return;
-
-        // 위치/ 회전 (카메라 정면)
-        Vector3 targetPos = followTarget.position + followTarget.forward * distance + Vector3.up * verticalOffset;
-        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * followSlerp);
-
-        Quaternion lookRot = Quaternion.LookRotation(transform.position - followTarget.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * followSlerp);
+        if (!rootCanvas) rootCanvas = GetComponent<Canvas>();
+        cg = GetComponent<CanvasGroup>();
     }
 
-    public void ShowInFrontOfCamera(Transform cam, string title, string desc, string [] steps, Sprite icon)
+    public void Show(string title, string desc, string[] steps, Sprite icon)
     {
-        followTarget = cam;
-        titleText.text = title;
-        descText.text = desc;
+        if (!rootCanvas) return;
 
-        if (steps != null && steps.Length > 0)
+        if (titleText) titleText.text = string.IsNullOrWhiteSpace(title) ? " " : title;
+        if (descText) descText.text = string.IsNullOrWhiteSpace(desc) ? " " : desc;
+
+        if (stepsText)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (var s in steps) if (!string.IsNullOrWhiteSpace(s)) sb.AppendLine("• " + s);
-            stepsText.text = sb.ToString().TrimEnd();
+            var sb = new StringBuilder();
+            if (steps != null) foreach (var s in steps) if (!string.IsNullOrWhiteSpace(s)) sb.AppendLine("• " + s);
+            stepsText.text = sb.Length > 0 ? sb.ToString().TrimEnd() : " ";
         }
-        else stepsText.text = "";
 
-        iconImage.gameObject.SetActive(icon != null);
+        if (iconImage)
+        {
+            iconImage.gameObject.SetActive(icon != null);
+            if (icon) iconImage.sprite = icon;
+        }
 
-        rootCanvas.enabled = true;
-        visible = true;
+        if (cg) { cg.alpha = 1f; cg.blocksRaycasts = false; cg.interactable = false; }
+        rootCanvas.enabled = true;               // 위치/회전은 건드리지 않음(씬에 둔 그대로)
     }
 
-    public IEnumerator HideAfter(float sec)
-    {
-        yield return new WaitForSeconds(sec);
-        HideNow();
-    }
-
+    public IEnumerator HideAfter(float sec) { yield return new WaitForSeconds(sec); HideNow(); }
     public void HideNow()
     {
-        visible = false;
-        rootCanvas.enabled = false;
-        followTarget = null;
+        if (cg) cg.alpha = 0f;
+        if (rootCanvas) rootCanvas.enabled = false;
     }
+
+    [ContextMenu("TEST: Show sample")]
+    void _TestShow() => Show("샘플 제목", "샘플 설명", new[] { "스텝 1", "스텝 2" }, null);
 }

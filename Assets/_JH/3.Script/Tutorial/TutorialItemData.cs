@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TutorialItem", menuName ="Tutorial/Tutorial Item Data")]
-public class TutorialItemData : MonoBehaviour
+public class TutorialItemData : ScriptableObject
 {
     [Header("표시")]
     public string displayName;

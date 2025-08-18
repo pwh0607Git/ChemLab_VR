@@ -162,6 +162,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.DefaultCompany.ChemLab_VR
+    Standalone: com.DefaultCompany.ChemLab-VR
   buildNumber:
     Standalone: 0
     VisionOS: 0
