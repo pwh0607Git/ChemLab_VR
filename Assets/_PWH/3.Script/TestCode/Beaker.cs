@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CustomInspector;
 using DG.Tweening;
-using Unity.VisualScripting;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -11,11 +11,17 @@ public class ChemInform
 {
     public ChemFlag flag;
     public float amount;
-    
+
     public ChemInform(ChemFlag flag)
     {
         this.flag = flag;
         amount = 0f;
+    }
+
+    public ChemInform(ChemFlag flag, float amount)
+    {
+        this.flag = flag;
+        this.amount = amount;
     }
 }
 
@@ -33,29 +39,54 @@ public class Beaker : MonoBehaviour
     [Header("Concentration")]
     [SerializeField] float concentration;
 
+    [Header("Pour Angle")]
+    [SerializeField] Transform head;
+    public float angleThreshold = 120f;
+
     public List<ChemInform> BlendedLiquid => blendedLiquid;
     public List<ChemInform> BlendedPowder => blendedPowder;
+
+    private PourBehaviour pour;
+    [SerializeField, ReadOnly] float elapsedPour = 0f;
+    [SerializeField, ReadOnly] bool isReact = false;
 
     void Start()
     {
         Reset();
         liquidRender.material.SetFloat("_Fill", currentAmount / beakerAmount);
-        grabI = GetComponent<XRGrabInteractable>();
+
+        pour = new PourBehaviour();
+        pour.Initialize(head, angleThreshold);
     }
 
     void Update()
     {
+        //이미 화학 반응이 일어난 것에 대해서는 무시.
+        if (isReact) return;
+
         if (isPour)
         {
             PourBlend();
         }
+
+        PourLiquid();
+
+        elapsedPour += Time.deltaTime;
+
+        if (elapsedPour > 1f)
+        {
+            //1초 동안 액체를 받지 않으면 화학 반응 발생
+            if (!isReact)
+            {
+                StartChemicalReaction();
+            }
+        }
     }
 
-    XRGrabInteractable grabI;
-
-    public void SetGrabable(bool on)
+    public void PourLiquid()
     {
-        grabI.enabled = on;
+        if (currentAmount <= 0.01f) return;
+        pour.UpdatePour();
     }
 
     // 추가할 화학용품, 증가량
@@ -78,8 +109,10 @@ public class Beaker : MonoBehaviour
         chem.amount += add;
         currentAmount += add;
 
+        float _fill = Mathf.Clamp(currentAmount / beakerAmount, 0.4f, 1f);
+
         //fill amount 조절하기
-        liquidRender.material.SetFloat("_Fill", currentAmount / beakerAmount);
+        liquidRender.material.SetFloat("_Fill", _fill);
     }
 
     public void AddPowder(ChemFlag flag, int add)
@@ -134,17 +167,6 @@ public class Beaker : MonoBehaviour
         liquidRender.material.SetFloat("_Fill", currentAmount / beakerAmount);
     }
 
-    void MixBlend(List<ChemInform> mixture)
-    {
-        Debug.Log(mixture.Count());
-        foreach (var m in mixture)
-        {
-            AddLiquid(m.flag, m.amount);
-        }
-        CalculateConcentration();
-    }
-
-
     [Header("Chemical Reaction")]
     public Color reactionColor;
     [SerializeField] Vector2 rangeTime;
@@ -156,15 +178,11 @@ public class Beaker : MonoBehaviour
         // 칼륨과 나트륨이 모두 있을 경우에만 화학 반응이 작용한다.
         if (blendedLiquid.Find(b => b.flag.Equals(ChemFlag.Iodine_K)) == null || blendedLiquid.Find(b => b.flag.Equals(ChemFlag.Sulfite_Sodium)) == null) return;
 
-        //concentration = 0 ~ 1;
-
-        // c : 1 = 5 : t
-        // 5 = c * t;
-        // t = 5/ c
-
         float t = MapInverse(concentration, rangeTime.x, rangeTime.y);
 
         Debug.Log($"화학 반응 수행! Time : {t}");
+
+        isReact = true;
 
         DOVirtual.DelayedCall(t, () =>
         {
@@ -184,10 +202,19 @@ public class Beaker : MonoBehaviour
         return t_min + (1f - normalized) * (t_max - t_min);
     }
 
+    void MixBlend(List<ChemInform> mixture)
+    {
+        Debug.Log(mixture.Count());
+        foreach (var m in mixture)
+        {
+            AddLiquid(m.flag, m.amount);
+        }
+        CalculateConcentration();
+    }
 
     void CalculateConcentration()
     {
-        if (blendedLiquid.Count < 2) return; 
+        if (blendedLiquid.Count < 2) return;
 
         float amount_Distilled = 0f;
         float amount_Other = 0f;
@@ -229,22 +256,6 @@ public class Beaker : MonoBehaviour
 
     [Button("AddSample"), HideField] public bool btn2;
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag.Equals("Beaker"))
-        {
-            Debug.Log("Beaker와 부딪힘.");
-
-            if (otherBeaker == null) return;
-
-            var blendedLiquid = otherBeaker.BlendedLiquid;
-            MixBlend(blendedLiquid);
-
-            StartChemicalReaction();
-        }
-    }
-    
-    
     // 파티클이 비커의 콜라이더와 충돌할 때 호출
     void OnParticleCollision(GameObject other)
     {
@@ -252,11 +263,51 @@ public class Beaker : MonoBehaviour
         if (other.name.Equals("LiquidPour"))
         {
             //혼합물인지 일반 liquid 인지 체크
+            if (other.GetComponentInParent<Beaker>() != null)
+            {
+                Debug.Log("비커로 부터 나온 Liquid...");
+                Beaker b = other.GetComponentInParent<Beaker>();
+
+                b.TransferLiquid(this);
+
+                elapsedPour = 0f;
+
+                return;
+            }
+
             var liquid = other.GetComponentInParent<Liquid>();
 
             if (liquid != null)
             {
                 AddLiquid(liquid.Flag, 0.2f);
+            }
+        }
+    }
+
+    public void TransferLiquid(Beaker target)
+    {
+        if (currentAmount <= 0) return;
+
+        foreach (var l in blendedLiquid)
+        {
+            if (l.amount < pourPerFrame)
+                target.AddLiquid(l.flag, l.amount);
+            else
+                target.AddLiquid(l.flag, pourPerFrame);
+
+            l.amount -= pourPerFrame;
+            currentAmount -= pourPerFrame;
+
+            liquidRender.material.SetFloat("_Fill", currentAmount / beakerAmount);
+
+            if (l.amount <= 0)
+            {
+                blendedLiquid.Remove(l);
+            }
+
+            if (currentAmount <= 0)
+            {
+                currentAmount = 0f;
             }
         }
     }
