@@ -25,7 +25,7 @@ public class AnalyzerConrol : SoketPlace
             .AppendCallback(() =>
             {
                 ShowUI(liquidCom, liquidPowder);
-            }).OnComplete(() => b.SetGrabable(true));
+            });
     }
 
     [Header("UI")]
