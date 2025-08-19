@@ -1,19 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum EPType
 {
-    EP1,
+    ClockReaction,
     
-    EP2
+    Explosion,
 }
 
 
-public class EPReport : MonoBehaviour
+public abstract class EPReport : MonoBehaviour
 {
     [SerializeField] EPType type;
     public EPType Type => type;
-
-    
 }
