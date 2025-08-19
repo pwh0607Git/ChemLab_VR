@@ -1,37 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using CustomInspector;
 using TMPro;
 using UnityEngine;
 
+[Serializable]
+public class ReportTableCol
+{
+    public List<TextMeshProUGUI> tmps;
+}
+
 public class ClockReactionReport : EPReport
 {
-    [SerializeField] TextMeshProUGUI text1;
-    [SerializeField] TextMeshProUGUI text2;
-    [SerializeField] TextMeshProUGUI text3;
-    [SerializeField] TextMeshProUGUI reactionTime1;
-    
-    [SerializeField] TextMeshProUGUI text5;
-    [SerializeField] TextMeshProUGUI text6;
-    [SerializeField] TextMeshProUGUI text7;
-    [SerializeField] TextMeshProUGUI reactionTime2;
-
-    public void UpdateReport(float amount1, float amount2, float amount3, float reactionTime1
-    ,float amount4, float amount5, float amount6, float reactionTime2)
-    {
-        text1.text = amount1.ToString();
-        text2.text = amount2.ToString();
-        text3.text = amount3.ToString();
-        this.reactionTime1.text = reactionTime1.ToString();
-        
-        text5.text = amount4.ToString();
-        text6.text = amount5.ToString();
-        text7.text = amount6.ToString();
-        this.reactionTime2.text = reactionTime2.ToString();
-    }
+    [SerializeField] List<ReportTableCol> table = new();
 
     [Button("TestReporting"), HideField] public bool testButton1;
 
     public void TestReporting()
     {
-        UpdateReport(10, 10, 10, 1f, 20, 12, 13, 5f);
+
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag.Equals("Pen"))
+        {
+            WriteResult();
+        }   
+    }
+
+    void WriteResult()
+    {
+        Debug.Log("리포트 작성!");
+        List<ClockReactionCase> cachedData = ExperimentManager.Instance.CachedData_ClockReaction;
+
+        if (cachedData == null) return;
+
+        for (int i = 0; i < cachedData.Count(); i++)
+        {
+            ReportTableCol col = table[i];
+            col.tmps[0].text = cachedData[i].chemInforms.Find(c => c.flag.Equals(ChemFlag.Distilled)).amount.ToString();
+            col.tmps[1].text = cachedData[i].chemInforms.Find(c => c.flag.Equals(ChemFlag.Sulfite_Sodium)).amount.ToString();
+            col.tmps[2].text = cachedData[i].chemInforms.Find(c => c.flag.Equals(ChemFlag.Iodine_K)).amount.ToString();
+            col.tmps[3].text = cachedData[i].reactionTime.ToString();
+        }     
     }
 }
