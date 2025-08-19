@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CustomInspector;
 using DG.Tweening;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 [System.Serializable]
 public class ChemInform
@@ -86,6 +84,13 @@ public class Beaker : MonoBehaviour
     public void PourLiquid()
     {
         if (currentAmount <= 0.01f) return;
+
+        if (blendedPowder.Find(p => p.flag.Equals(ChemFlag.Starch)) == null)
+        {
+            Debug.Log("녹말이 없습니다.");
+            return;   
+        }
+
         pour.UpdatePour();
     }
 
@@ -170,7 +175,7 @@ public class Beaker : MonoBehaviour
     [Header("Chemical Reaction")]
     public Color reactionColor;
     [SerializeField] Vector2 rangeTime;
-
+    
     [Space2(20), HideField] public bool em1;
 
     void StartChemicalReaction()
@@ -183,6 +188,8 @@ public class Beaker : MonoBehaviour
         Debug.Log($"화학 반응 수행! Time : {t}");
 
         isReact = true;
+
+        ExperimentManager.Instance.UpdateExperiment(blendedLiquid, t);
 
         DOVirtual.DelayedCall(t, () =>
         {

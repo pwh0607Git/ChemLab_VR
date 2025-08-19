@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CustomInspector;
 using UnityEngine;
 
 // 화학 시계 반응 실험
@@ -7,6 +8,7 @@ using UnityEngine;
 public class ClockReactionCase
 {
     public List<ChemInform> chemInforms;
+    public float reactionTime;
 
     public void AddData(ChemFlag flag, float amount)
     {
@@ -26,9 +28,11 @@ public class ExperimentManager : BehaviourSingleton<ExperimentManager>
 {
     protected override bool IsDontDestroy() => false;
     [SerializeField] GameObject report;
-    [SerializeField] List<ClockReactionCase> cachedData;
+    [SerializeField, ReadOnly] List<ClockReactionCase> cachedData_ClockReaction;
 
-    public void UpdateExperiment(List<ChemInform> informs)
+    public List<ClockReactionCase> CachedData_ClockReaction => cachedData_ClockReaction;
+    
+    public void UpdateExperiment(List<ChemInform> informs, float t1)
     {
         ClockReactionCase case1 = new();
 
@@ -36,7 +40,8 @@ public class ExperimentManager : BehaviourSingleton<ExperimentManager>
         {
             case1.AddData(i.flag, i.amount);
         }
-        
-        cachedData.Add(case1);
+
+        case1.reactionTime = t1;
+        cachedData_ClockReaction.Add(case1);
     }
 }
