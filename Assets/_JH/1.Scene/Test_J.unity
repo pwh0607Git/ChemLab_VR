@@ -2974,7 +2974,8 @@ PrefabInstance:
       value: XR Interaction Setup
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1431807633563055495, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}

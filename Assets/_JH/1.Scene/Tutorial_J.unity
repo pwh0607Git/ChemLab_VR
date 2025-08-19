@@ -541,7 +541,8 @@ PrefabInstance:
       value: XR Interaction Setup
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1431807633563055495, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 96524611674449821, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
@@ -8178,6 +8179,17 @@ MonoBehaviour:
     m_RotationOrder: 4
   smooth: 8
   keepAshMeshAtEnd: 1
+  flameYOffset: 0.06
+  smokeYOffset: 0
+  ashYOffset: 0.1
+  flameAnchor: {fileID: 0}
+  smokeAnchor: {fileID: 0}
+  ashAnchor: {fileID: 0}
+  forceLoopAll: 1
+  forceOrientUp: 1
+  orientLift: 0.02
+  flameSizeScale: 2
+  useTransformScaleForFlame: 1
 --- !u!114 &8912316050581903335
 MonoBehaviour:
   m_ObjectHideFlags: 0
