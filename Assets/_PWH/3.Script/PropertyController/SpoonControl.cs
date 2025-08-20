@@ -25,8 +25,10 @@ public class SpoonControl : MonoBehaviour
     {
         if (other.tag.Equals("Beaker"))
         {
+            if (currentChemical.Equals(ChemFlag.None)) return;
+            
             Debug.Log("비커에 닿음");
-
+            
             Beaker b = other.GetComponent<Beaker>();
 
             b.AddPowder(currentChemical, 1);

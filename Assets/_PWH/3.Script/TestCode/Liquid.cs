@@ -66,7 +66,6 @@ public class Liquid : MonoBehaviour
     private bool isGrab;
     [SerializeField] private bool isPour;
 
-    // 🔹 기능 클래스 인스턴스
     [SerializeField] private PourBehaviour pour;
 
     void Start()
