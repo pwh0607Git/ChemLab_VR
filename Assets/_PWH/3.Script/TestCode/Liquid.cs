@@ -1,22 +1,17 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 [Serializable]
 public class PourBehaviour
 {
     public Transform head;            // 기울기 측정 지점
-    public float angleThreshold = 150f;
 
-    private bool isPouring;
     private VFX pourVFX;
 
-    public bool IsPouring => isPouring;
-
-    public void Initialize(Transform headTransform, float angleThreshold)
+    public void Initialize(Transform headTransform)
     {
         head = headTransform;
-        isPouring = false;
-        this.angleThreshold = angleThreshold;
 
         pourVFX = VFXManager.Instance.SpawnVFX(
             VFXFlag.LiquidPour,
@@ -28,17 +23,14 @@ public class PourBehaviour
         pourVFX.Stop();
     }
 
-    public void UpdatePour()
+    public void Start()
     {
-        if (head == null) return;
+        pourVFX.Play();
+    }
 
-        float angle = Vector3.Angle(head.up, Vector3.up);
-        isPouring = angle > angleThreshold;
-
-        if (isPouring)
-            pourVFX?.Play();
-        else
-            pourVFX?.Stop();
+    public void Stop()
+    {
+        pourVFX.Stop();
     }
 
     public void Dispose()
@@ -64,19 +56,26 @@ public class Liquid : MonoBehaviour
 
     [Header("Flag")]
     private bool isGrab;
-    [SerializeField] private bool isPour;
 
     [SerializeField] private PourBehaviour pour;
 
     void Start()
     {
         pour = new PourBehaviour();
-        pour.Initialize(head, angleThreshold);
+        pour.Initialize(head);
     }
 
     void Update()
     {
-        pour.UpdatePour();
+        float angle = Vector3.Angle(head.up, Vector3.up);
+
+        UpdatePourState(angle > angleThreshold);
+    }
+
+    void UpdatePourState(bool on)
+    {
+        if (on) pour.Start();
+        else pour.Stop();
     }
 
     void OnDisable()
