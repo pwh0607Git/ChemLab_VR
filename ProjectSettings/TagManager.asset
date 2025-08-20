@@ -3,12 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Water
+  - ChemDish
+  - Spoon
+  - Beaker
+  - Blend
+  - Pen
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Wick
   - Water
   - UI
   - 
