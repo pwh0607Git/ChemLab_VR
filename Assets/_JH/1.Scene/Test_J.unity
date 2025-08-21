@@ -1118,6 +1118,9 @@ MonoBehaviour:
   orientLift: 0.02
   flameSizeScale: 2
   useTransformScaleForFlame: 1
+  visualEffectPrefab: {fileID: 914515844860369859, guid: 24547161218439141b34bf10e216d953, type: 3}
+  visualAnchor: {fileID: 0}
+  visualYOffset: 0
 --- !u!1 &739240102
 GameObject:
   m_ObjectHideFlags: 0
