@@ -13,7 +13,8 @@ public enum VFXFlag
     FlameFx2,
     Flame,
     Smoke,
-    Ash
+    Ash,
+    FlameVFX
 }
 
 [Serializable]
