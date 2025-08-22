@@ -4,7 +4,7 @@ public class VFX : PoolBehaviour
 {
     [SerializeField] ParticleSystem particle;
 
-    void Start()
+    void Awake()
     {
         particle = GetComponentInChildren<ParticleSystem>();
     }
@@ -17,7 +17,7 @@ public class VFX : PoolBehaviour
 
     void OnEnable()
     {
-        particle.Play();
+        Play();
     }
 
     public void Play()

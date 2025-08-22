@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class TorchFlameController : MonoBehaviour
 {
@@ -8,56 +9,115 @@ public class TorchFlameController : MonoBehaviour
     public Transform vfxAnchor; // 불 위치( 없으면 이 오브젝트)
     public bool loopFlame = true; // 토치 불은 루프
 
-    [Header("XR 입력 (옵션)")]
-    public InputActionReference toggleFlameAction;
+    [Header("XR Grab 동작")]
+    [SerializeField] XRGrabInteractable grab;
+    [SerializeField] bool turnOnWhenGrabbed = true;
+
+    [Header("쏘면서 태우기(점화 판정)")]
+    [SerializeField] LayerMask igniteMask;
+    [Tooltip("불 길이( Speed * Lifetime 에 맞추기")]
+    [SerializeField, Min(0f)] float flameLength = 1.2f;
+    [SerializeField, Min(0f)] float flameRadius = 0.035f;
+    [SerializeField, Min(0f)] float igniteCooldown = 0.05f;
+    [SerializeField] bool drawDebugRay = false;
+
+    [Tooltip("노즐 앞에세 얼마나 떨어진 지점부터 판정을 시작할지")]
+    [SerializeField, Min(0f)] float nozzleOffset = 0.2f;
 
     public bool IsOn { get; private set; } = false;
 
     // 스폰된 불 VFX 인스턴스
     private VFX _flameVfx;
+    float _igniteTimer;
 
-    void Start()
+    readonly Collider[] _hits = new Collider[8];
+
+    private void Reset()
     {
-        if (toggleFlameAction != null)
+        if(!vfxAnchor)
         {
-            toggleFlameAction.action.performed += OnTogglePerformed;
-            toggleFlameAction.action.Enable();
-        }   
+            var t = transform.Find("TorchVFXAnchor");
+            if (t) vfxAnchor = t;
+        }
+        if (!grab) grab = GetComponent<XRGrabInteractable>();
     }
 
+    private void Awake()
+    {
+        if (!vfxAnchor) vfxAnchor = transform;
+        if (!grab) grab = GetComponent<XRGrabInteractable>();
+    }
     private void OnEnable()
     {
-        if (toggleFlameAction != null)
+        if (grab)
         {
-            toggleFlameAction.action.performed += OnTogglePerformed;
-            toggleFlameAction.action.Enable();
+            grab.selectEntered.AddListener(OnGrab);
+            grab.selectExited.AddListener(OnRelease);
         }
     }
     private void OnDisable()
     {
-        if (toggleFlameAction != null)
+        if (grab)
         {
-            toggleFlameAction.action.performed -= OnTogglePerformed;
-            toggleFlameAction.action.Disable();
+            grab.selectEntered.RemoveListener(OnGrab);
+            grab.selectExited.RemoveListener(OnRelease);
         }
-
-        // 꺼질 때 정리
-        if (_flameVfx != null)
-        {
-            _flameVfx.Stop();
-            _flameVfx = null;
-        }
-        IsOn = false;
+        SetFlame(false); // 안전 정리
     }
 
-    void OnTogglePerformed(InputAction.CallbackContext _)
+    void Update()
     {
-        Toggle();
+        // 불 켜져 있는 동안, 매 프레임 앵커와 동기화
+        if (_flameVfx != null && vfxAnchor != null)
+        {
+            var t = _flameVfx.transform;
+            t.position = vfxAnchor.position;
+            t.rotation = vfxAnchor.rotation;   // 새로 나오는 입자는 항상 forward(+Z)로
+        }
+
+        if (!IsOn || !vfxAnchor) return;
+
+        _igniteTimer -= Time.deltaTime;
+        if (_igniteTimer > 0f) return;
+
+        // 🔥 불꽃 "부피" 전체에 대한 겹침 판정 (노즐에서 앞으로 flameLength 길이)
+        Vector3 p0 = vfxAnchor.position + vfxAnchor.forward * nozzleOffset;                          // 시작점(노즐)
+        Vector3 p1 = p0 + vfxAnchor.forward * flameLength;        // 끝점(제트 끝)
+        int count = Physics.OverlapCapsuleNonAlloc(
+            p0, p1, flameRadius, _hits, igniteMask, QueryTriggerInteraction.Collide);
+
+        if (drawDebugRay)
+        {
+            Debug.DrawLine(p0, p1, Color.yellow, 0f, false);
+            Debug.DrawRay(p0, vfxAnchor.up * flameRadius, Color.red, 0f, false);
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            var col = _hits[i];
+            if (!col) continue;
+
+
+            // 자식 트리거(IgniteCollider)를 맞아도 부모 Wick에서 스크립트 찾기
+            var wick = col.GetComponentInParent<WickIgnitable>();
+            if (wick != null) 
+            {
+                wick.TryIgnite();            // 심지 점화
+                _igniteTimer = igniteCooldown;
+                break;                       // 한 번만 점화하고 다음 프레임에 다시 판정
+            }
+        }
     }
 
-    public void Toggle()
+    // XR Grab 이벤트
+    void OnGrab(SelectEnterEventArgs _)
     {
-        SetFlame(!IsOn);
+        if (turnOnWhenGrabbed) SetFlame(true);
+    }
+
+    void OnRelease(SelectExitEventArgs _)
+    {
+        if (turnOnWhenGrabbed) SetFlame(false); ;
     }
 
     public void SetFlame(bool on)

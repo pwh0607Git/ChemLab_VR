@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.VFX;
 
 /// <summary>
 /// 분출 시퀀스: 불꽃/연기/재 VFX를 스폰하고, 재 더미를 성장시킨 뒤 정리.
@@ -7,6 +8,7 @@ using UnityEngine;
 /// - 파티클 루프 강제(풀/스폰 코드가 loop=false로 덮어써도 복구)
 /// - 위(+Y) 방향으로 정렬 및 미세 리프트
 /// - 불꽃 크기 스케일(Transform 또는 StartSize 곱하기)
+/// - VisualEffect 프리팹을 직접 스폰(파티클과 같은 타이밍)
 /// </summary>
 public class EruptionSequenceVFX : MonoBehaviour
 {
@@ -78,10 +80,20 @@ public class EruptionSequenceVFX : MonoBehaviour
     [Tooltip("불꽃 프리팹의 ParticleSystem/Main/Scaling Mode가 Hierarchy일 때 권장")]
     public bool useTransformScaleForFlame = true;
 
+    // Visual Effect 직접 스폰
+    [Header("Visual Effect( 직접 스폰)")]
+    [Tooltip("파티클과 같은 타이밍에 켜질 VisualEffect 프리팹)")]
+    public GameObject visualEffectPrefab;
+    [Tooltip("비우면 flameAnchor(또는 centerPoint)를 사용")]
+    public Transform visualAnchor;
+    [Tooltip("VisualEffect만의 추가 y보정")]
+    public float visualYOffset = 0f;
+
     // 내부 상태
     Vector3 _heapInitScale;
     Vector3 _meshInitScale;
     bool _running;
+    GameObject _visualInst;
 
     void Awake()
     {
@@ -97,6 +109,7 @@ public class EruptionSequenceVFX : MonoBehaviour
     void OnDisable()
     {
         if (ignitable) ignitable.onIgnited.RemoveListener(StartEruption);
+        CleanupVisual();
     }
 
     // ───────────────── 헬퍼 ─────────────────
@@ -159,6 +172,15 @@ public class EruptionSequenceVFX : MonoBehaviour
             }
             m.startSize = sz;
         }
+    }
+
+    void CleanupVisual()
+    {
+        if (!_visualInst) return;
+        var ve = _visualInst.GetComponentInChildren<VisualEffect>(true);
+        if (ve) ve.Stop();
+        Destroy(_visualInst);
+        _visualInst = null;
     }
 
     // ───────────────── 실행 ─────────────────
@@ -248,6 +270,19 @@ public class EruptionSequenceVFX : MonoBehaviour
             Debug.LogWarning("[Eruption] VFXManager.Instance 없음");
         }
 
+        // 같은 타이밍에 VisualEffect 프리팹도 직접 스폰
+        if(visualEffectPrefab)
+        {
+            var vA = visualAnchor ? visualAnchor : fA; // flame과 동일 앵커
+            var pos = vA.position + Vector3.up * visualYOffset;
+            var rot = vA.rotation;
+
+            _visualInst = Instantiate(visualEffectPrefab, pos, rot, vA);
+
+            var ve = _visualInst.GetComponentInChildren<VisualEffect>(true);
+            if (ve) ve.Play();
+        }
+
         // 2) 분출 동안 재 더미 성장
         var target = new Vector3(targetScaleXZ.x, targetHeight, targetScaleXZ.y);
         float t = 0f;
@@ -275,6 +310,9 @@ public class EruptionSequenceVFX : MonoBehaviour
         if (flame) flame.Stop();
         if (smoke) smoke.Stop();
         if (ash) ash.Stop();
+
+        // VisualEffect도 함께 정리
+        CleanupVisual();
 
         if (!keepAshMeshAtEnd)
         {
