@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using CustomInspector;
 using Firebase;
 using Firebase.AI;
@@ -18,6 +20,7 @@ public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
     [Header("Prompt DB")]
     [SerializeField] APIConversation conversation;
 
+    [Button("SendMessage"), HideField] public bool b1;
     public void SendMessage()
     {
         SendMessage(inputMessage);
@@ -30,7 +33,8 @@ public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
 
     void InitFB()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
             var dependencyStatus = task.Result;
             if (dependencyStatus == DependencyStatus.Available)
             {
@@ -59,10 +63,32 @@ public class GeminiAPIManager : BehaviourSingleton<GeminiAPIManager>
 
         string prompt = conversation.prompts.Find(p => p.intent.Equals(intent)).prompt;
 
-        // 사용자의 메시지를 보내고 응답을 받습니다.
+        // 사용자의 메시지를 보내고 응답을 받기
         var response = await chatSession.SendMessageAsync(prompt);
 
-        // 응답 텍스트를 출력합니다.
         Debug.Log($"Gemini 응답: {response.Text}");
+
+        var splitStrings = SplitString(response.Text);
+
+        ShowText(splitStrings);
+    }
+
+    [SerializeField] TextBoxController textbox;
+    void ShowText(List<string> msgs)
+    {
+        if (!textbox.gameObject.activeSelf)
+        {
+            textbox.gameObject.SetActive(true);
+        }
+        
+        textbox.SetTextQueue(msgs);
+    }
+
+    List<string> SplitString(string message)
+    {
+        List<string> res = new();
+        res = message.Split('.').ToList();
+
+        return res;
     }
 }

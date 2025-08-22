@@ -8,5 +8,11 @@ public class ExpolsionReactionReport : EPReport
         {
             WriteResult();
         }   
+        
+        if (collision.gameObject.tag.Equals("NPC"))
+        {
+            //리포트 제출 텍스트 출력
+            GeminiAPIManager.Instance.SendMessage("Report_Explosion");
+        }
     }
 }
