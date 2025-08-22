@@ -132,11 +132,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 667469e4c1d80bb4dabdf6fb5dc6f3ca, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0800865
+      value: 0.8836
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 667469e4c1d80bb4dabdf6fb5dc6f3ca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 667469e4c1d80bb4dabdf6fb5dc6f3ca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -194,11 +194,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: cb41936d4c10a7d4d949041a1f60cc6f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0800865
+      value: 1.2786
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cb41936d4c10a7d4d949041a1f60cc6f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cb41936d4c10a7d4d949041a1f60cc6f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -794,6 +794,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1580212504}
+  - {fileID: 538332506}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &339850011
@@ -1086,6 +1087,61 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536265743}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &538332505
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 538332506}
+  - component: {fileID: 538332507}
+  m_Layer: 3
+  m_Name: IgniteCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &538332506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538332505}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.91, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 339850010}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &538332507
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538332505}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &541046071
 GameObject:
   m_ObjectHideFlags: 0
@@ -3008,7 +3064,7 @@ Transform:
   m_GameObject: {fileID: 1994946536}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.1707, y: 0.18, z: 0}
+  m_LocalPosition: {x: -0.209, y: 0.18, z: 0}
   m_LocalScale: {x: 0.03, y: 0.16, z: 0.03}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3322,7 +3378,7 @@ Transform:
   m_GameObject: {fileID: 919132147522273134}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.8463968, y: 0, z: -0.06708765}
+  m_LocalPosition: {x: -0.2027, y: 0.205, z: -0.374}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3337,7 +3393,7 @@ Transform:
   m_GameObject: {fileID: 919132148422041272}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 1.4452775, y: 0, z: -0.05869782}
+  m_LocalPosition: {x: 1.323, y: 0.122, z: -0.219}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3438,7 +3494,7 @@ MonoBehaviour:
   igniteMask:
     serializedVersion: 2
     m_Bits: 8
-  flameLength: 3
+  flameLength: 0.7
   flameRadius: 0.03
   igniteCooldown: 0.05
   drawDebugRay: 0
