@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 public class ClockReactionCase
 {
-    public List<ChemInform> chemInforms;
+    public List<ChemInform> chemInforms = new();
     public float reactionTime;
 
     public void AddData(ChemFlag flag, float amount)
@@ -27,11 +27,15 @@ public class ExplosionReactionCase
 public class ExperimentManager : BehaviourSingleton<ExperimentManager>
 {
     protected override bool IsDontDestroy() => false;
-    [SerializeField] GameObject report;
-    [SerializeField, ReadOnly] List<ClockReactionCase> cachedData_ClockReaction;
 
+
+    [Header("Clock Reaction")]
+    [SerializeField, ReadOnly] List<ClockReactionCase> cachedData_ClockReaction;
     public List<ClockReactionCase> CachedData_ClockReaction => cachedData_ClockReaction;
-    
+
+    [Header("Explosion Reaction")]
+    public string res;
+
     public void UpdateExperiment(List<ChemInform> informs, float t1)
     {
         ClockReactionCase case1 = new();

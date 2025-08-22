@@ -30,8 +30,10 @@ public class ClockReactionReport : EPReport
         }   
     }
 
-    void WriteResult()
+    public override void WriteResult()
     {
+        base.WriteResult();
+        
         Debug.Log("리포트 작성!");
         List<ClockReactionCase> cachedData = ExperimentManager.Instance.CachedData_ClockReaction;
 
