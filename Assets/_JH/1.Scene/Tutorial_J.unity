@@ -712,7 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf54720a81825cf4484056e0d68fb492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heap: {fileID: 0}
+  heap: {fileID: 1761758973470046012}
   secondsForFull: 5
   radiusRange: {x: 0.1, y: 0.5}
   heightRange: {x: 0.01, y: 0.04}
@@ -2471,7 +2471,16 @@ MonoBehaviour:
   torchFlameFlag: 3
   vfxAnchor: {fileID: 1993302449169844663}
   loopFlame: 1
-  toggleFlameAction: {fileID: 4806770101535410126, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  grab: {fileID: 0}
+  turnOnWhenGrabbed: 1
+  igniteMask:
+    serializedVersion: 2
+    m_Bits: 0
+  flameLength: 1.2
+  flameRadius: 0.035
+  igniteCooldown: 0.05
+  drawDebugRay: 0
+  nozzleOffset: 0.2
 --- !u!1 &6673727398588020041
 GameObject:
   m_ObjectHideFlags: 0
@@ -8190,6 +8199,9 @@ MonoBehaviour:
   orientLift: 0.02
   flameSizeScale: 2
   useTransformScaleForFlame: 1
+  visualEffectPrefab: {fileID: 0}
+  visualAnchor: {fileID: 0}
+  visualYOffset: 0
 --- !u!114 &8912316050581903335
 MonoBehaviour:
   m_ObjectHideFlags: 0

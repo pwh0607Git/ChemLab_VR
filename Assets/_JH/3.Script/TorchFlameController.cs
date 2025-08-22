@@ -21,6 +21,9 @@ public class TorchFlameController : MonoBehaviour
     [SerializeField, Min(0f)] float igniteCooldown = 0.05f;
     [SerializeField] bool drawDebugRay = false;
 
+    [Tooltip("노즐 앞에세 얼마나 떨어진 지점부터 판정을 시작할지")]
+    [SerializeField, Min(0f)] float nozzleOffset = 0.2f;
+
     public bool IsOn { get; private set; } = false;
 
     // 스폰된 불 VFX 인스턴스
@@ -78,7 +81,7 @@ public class TorchFlameController : MonoBehaviour
         if (_igniteTimer > 0f) return;
 
         // 🔥 불꽃 "부피" 전체에 대한 겹침 판정 (노즐에서 앞으로 flameLength 길이)
-        Vector3 p0 = vfxAnchor.position;                          // 시작점(노즐)
+        Vector3 p0 = vfxAnchor.position + vfxAnchor.forward * nozzleOffset;                          // 시작점(노즐)
         Vector3 p1 = p0 + vfxAnchor.forward * flameLength;        // 끝점(제트 끝)
         int count = Physics.OverlapCapsuleNonAlloc(
             p0, p1, flameRadius, _hits, igniteMask, QueryTriggerInteraction.Collide);
@@ -94,7 +97,10 @@ public class TorchFlameController : MonoBehaviour
             var col = _hits[i];
             if (!col) continue;
 
-            if (col.TryGetComponent(out WickIgnitable wick))
+
+            // 자식 트리거(IgniteCollider)를 맞아도 부모 Wick에서 스크립트 찾기
+            var wick = col.GetComponentInParent<WickIgnitable>();
+            if (wick != null) 
             {
                 wick.TryIgnite();            // 심지 점화
                 _igniteTimer = igniteCooldown;
