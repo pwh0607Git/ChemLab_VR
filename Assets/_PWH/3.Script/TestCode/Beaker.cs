@@ -253,24 +253,6 @@ public class Beaker : MonoBehaviour
         Observer Pattern.
     */
 
-    [SerializeField] private Beaker otherBeaker;
-
-    [SerializeField] private List<ChemInform> testLiquid = new();          //비커에 들어있는 혼합용액 상태.
-    [SerializeField] private List<ChemInform> testPowder = new();          //비커에 들어있는 혼합가루 상태.
-
-    void AddSample()
-    {
-        foreach (var m in testLiquid)
-        {
-            AddLiquid(m.flag, m.amount);
-        }
-
-        foreach (var m in testPowder)
-        {
-            AddPowder(m.flag, (int)m.amount);
-        }
-    }
-
     [Button("AddSample"), HideField] public bool btn2;
 
     // 파티클이 비커의 콜라이더와 충돌할 때 호출
