@@ -9,7 +9,6 @@ public class TutorialUIControllerStaticTMP : MonoBehaviour
 {
     public Canvas rootCanvas;                    // World Space
     public TMP_Text titleText, descText, stepsText;
-    public Image iconImage;
 
     private CanvasGroup cg;
 
@@ -31,12 +30,6 @@ public class TutorialUIControllerStaticTMP : MonoBehaviour
             var sb = new StringBuilder();
             if (steps != null) foreach (var s in steps) if (!string.IsNullOrWhiteSpace(s)) sb.AppendLine("• " + s);
             stepsText.text = sb.Length > 0 ? sb.ToString().TrimEnd() : " ";
-        }
-
-        if (iconImage)
-        {
-            iconImage.gameObject.SetActive(icon != null);
-            if (icon) iconImage.sprite = icon;
         }
 
         if (cg) { cg.alpha = 1f; cg.blocksRaycasts = false; cg.interactable = false; }

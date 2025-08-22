@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5734528330719838500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1968433973472248571}
+  - component: {fileID: 7995434124075397474}
+  m_Layer: 0
+  m_Name: VFXManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1968433973472248571
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5734528330719838500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7995434124075397474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5734528330719838500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 341f0240c27f7aa4eabed4513856544c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vfxes:
+  - flag: 2
+    vfx: {fileID: 6544422328889659864, guid: 2b44b569f8de3d04d93d26894c84bf53, type: 3}
+  - flag: 3
+    vfx: {fileID: 2302496123659862892, guid: 6190446803effbc4795a85e7865e35e9, type: 3}
+  - flag: 4
+    vfx: {fileID: 7657393477120008812, guid: b4c73b8999814124f9bdc2b08113b58b, type: 3}
+  - flag: 5
+    vfx: {fileID: -1488577032164151563, guid: 207a8e8b536f8244daa233e5141485b9, type: 3}
+  - flag: 6
+    vfx: {fileID: -309973955507120959, guid: 4d66173b4672b274887dbb184f5ff454, type: 3}
+  - flag: 7
+    vfx: {fileID: 6963786314124564632, guid: 24547161218439141b34bf10e216d953, type: 3}
+  testFlag: 0
+  b1: 0
+  b2: 0
+  testVFX: {fileID: 0}
