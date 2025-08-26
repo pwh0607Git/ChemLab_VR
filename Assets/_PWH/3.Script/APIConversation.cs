@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Prompt
-{
+public class Prompt{
     public string intent;           // 의도
     public string prompt;           // AI 출력 의도   
 }
