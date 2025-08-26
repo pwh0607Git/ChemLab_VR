@@ -53,11 +53,18 @@ public class GeminiPersonTrigger : MonoBehaviour
         GeminiAPIManager.Instance.SendMessage(intentKey);
 
         // 2. 힌트 페이드아웃 후 비활성화
-        if (questHint && !hintCanvasGroup)
+        if (questHint)
         {
-            hintCanvasGroup.DOKill();
-            questHint.SetActive(false);
-
+            if(hintCanvasGroup)
+            {
+                hintCanvasGroup.DOKill();
+                hintCanvasGroup.DOFade(0f, fadeOutSec)
+                    .OnComplete(() => questHint.SetActive(false));
+            }
+            else
+            {
+                questHint.SetActive(false);
+            }
         }
     }
 }
