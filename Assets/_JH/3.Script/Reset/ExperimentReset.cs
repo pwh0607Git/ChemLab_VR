@@ -6,44 +6,45 @@ using UnityEngine.InputSystem;
 public class ExperimentResetHard : MonoBehaviour
 {
     [Header("트리거 입력 (둘 중 하나)")]
-    [SerializeField] InputActionReference resetAction;    // 비워두면 폴링 사용
-    [SerializeField] bool useLeftSecondaryPolling = true; // 왼손 Y
-    [SerializeField] bool useRightSecondaryPolling = false; // 오른손 B
+    [SerializeField] private InputActionReference resetAction;     // 비워두면 폴링 사용
+    [SerializeField] private bool useLeftSecondaryPolling = true;  // 왼손 Y
+    [SerializeField] private bool useRightSecondaryPolling = false;// 오른손 B
 
     [Header("어떤 씬을 다시 로드할지")]
-    [SerializeField] bool reloadFirstLoaded = false;      // true=앱 처음 로드된 씬
-    [SerializeField] string sceneName = "";               // 지정 이름(옵션, 비우면 무시)
+    [SerializeField] private bool reloadFirstLoaded = false;       // true=앱 처음 로드된 씬
+    [SerializeField] private string sceneName = "";                // 지정 이름(옵션, 비우면 무시)
 
-    static string s_firstScene;
-    bool _prev;
+    private static string s_firstScene;
+    private bool _prev;
 
-    void Awake()
+    private void Awake()
     {
         if (string.IsNullOrEmpty(s_firstScene))
             s_firstScene = SceneManager.GetActiveScene().name;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
-        if (resetAction && resetAction.action != null)
+        if (resetAction != null && resetAction.action != null)
         {
             resetAction.action.performed += OnReset;
             resetAction.action.Enable();
         }
     }
-    void OnDisable()
+
+    private void OnDisable()
     {
-        if (resetAction && resetAction.action != null)
+        if (resetAction != null && resetAction.action != null)
         {
             resetAction.action.performed -= OnReset;
             resetAction.action.Disable();
         }
     }
 
-    void Update()
+    private void Update()
     {
         // 인풋 액션을 쓰면 폴링 생략
-        if (resetAction && resetAction.action != null) return;
+        if (resetAction != null && resetAction.action != null) return;
 
         bool pressed = false;
         if (useLeftSecondaryPolling)
@@ -61,7 +62,7 @@ public class ExperimentResetHard : MonoBehaviour
         _prev = pressed;
     }
 
-    void OnReset(InputAction.CallbackContext _)
+    private void OnReset(InputAction.CallbackContext _)
     {
         HardReset();
     }
