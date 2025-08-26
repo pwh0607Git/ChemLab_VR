@@ -11,12 +11,12 @@ public class PowderTriggerScaler : MonoBehaviour
     public float smooth = 8f;
 
     [Header("커버 허용 임계치 (0~1)")]
-    [Range(0,1)] public float coverThreshold01 = 0.3f;
+    [Range(0, 1)] public float coverThreshold01 = 0.3f;
     public UnityEvent onCoverReady; // (선택) 임계치 도달 시 1회 호출
 
     private ParticleSystem ps;
     private readonly List<ParticleSystem.Particle> inside = new();
-    private readonly List<ParticleSystem.Particle> enter  = new();
+    private readonly List<ParticleSystem.Particle> enter = new();
     private float accum;             // PourZone 안에서 누적된 시간(초)
     private bool firedEvent = false; // onCoverReady 1회 발사 제어
     private Vector3 initScale, initPos;
@@ -30,8 +30,9 @@ public class PowderTriggerScaler : MonoBehaviour
     {
         ps = GetComponent<ParticleSystem>();
         if (!heap) { Debug.LogError("[PowderTriggerScaler] heap not set"); enabled = false; return; }
-        initScale = heap.localScale;
-        initPos   = heap.localPosition;
+        //initScale = heap.localScale;
+        initScale = heap.lossyScale;
+        initPos = heap.localPosition;
     }
 
     void Update()
@@ -42,9 +43,26 @@ public class PowderTriggerScaler : MonoBehaviour
         float h = Mathf.Lerp(heightRange.x, heightRange.y, t);
         Vector3 target = new(r, h, r);
 
-        heap.localScale = Vector3.Lerp(heap.localScale, target, Time.deltaTime * smooth);
-        float offsetY = (heap.localScale.y - initScale.y) * 0.5f;
-        heap.localPosition = initPos + new Vector3(0, offsetY, 0);
+        Vector3 currentGlobal = heap.lossyScale;
+        Vector3 newGlobal = Vector3.Lerp(currentGlobal, target, Time.deltaTime * smooth);
+
+        if (heap.parent != null)
+        {
+            Vector3 parentScale = heap.parent.lossyScale;
+            heap.localScale = new Vector3(
+                newGlobal.x / parentScale.x,
+                newGlobal.y / parentScale.y,
+                newGlobal.z / parentScale.z
+                );
+        }
+        else
+            heap.localScale = newGlobal;
+        //float offsetY = (heap.lossyScale.y - initScale.y) * 0.5f;
+        //heap.localPosition = initPos + new Vector3(0, offsetY, 0);
+
+        //heap.localScale = Vector3.Lerp(heap.localScale, target, Time.deltaTime * smooth);
+        //float offsetY = (heap.localScale.y - initScale.y) * 0.5f;
+        //heap.localPosition = initPos + new Vector3(0, offsetY, 0);
 
         if (!firedEvent && ReadyToCover)
         {
@@ -56,7 +74,7 @@ public class PowderTriggerScaler : MonoBehaviour
     void OnParticleTrigger()
     {
         int nIn = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
-        int nEn = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter,  enter);
+        int nEn = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
 
         if (nIn > 0 || nEn > 0)
             accum = Mathf.Min(accum + Time.deltaTime, secondsForFull);
