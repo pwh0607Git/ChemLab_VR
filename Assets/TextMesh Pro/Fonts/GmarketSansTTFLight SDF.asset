@@ -60,9 +60,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: GmarketSansTTFLight SDF
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 159005957
   material: {fileID: 1801731357834487393}
-  materialHashCode: 0
+  materialHashCode: -724034683
   m_Version: 1.1.0
   m_SourceFontFileGUID: 82d4873c40556eb45894da7cf29c71ae
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 82d4873c40556eb45894da7cf29c71ae, type: 3}
@@ -57163,9 +57163,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.9
+    - _ScaleRatioB: 0.73125
+    - _ScaleRatioC: 0.73125
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
