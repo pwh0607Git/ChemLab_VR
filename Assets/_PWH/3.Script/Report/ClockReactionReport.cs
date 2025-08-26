@@ -27,11 +27,19 @@ public class ClockReactionReport : EPReport
         if (collision.gameObject.tag.Equals("Pen"))
         {
             WriteResult();
-        }   
+        }
+
+        if (collision.gameObject.tag.Equals("NPC"))
+        {
+            //리포트 제출 텍스트 출력
+            GeminiAPIManager.Instance.SendMessage("Report_ClockReaction");
+        }
     }
 
-    void WriteResult()
+    public override void WriteResult()
     {
+        base.WriteResult();
+        
         Debug.Log("리포트 작성!");
         List<ClockReactionCase> cachedData = ExperimentManager.Instance.CachedData_ClockReaction;
 

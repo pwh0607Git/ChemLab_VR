@@ -45,6 +45,7 @@ public class Beaker : MonoBehaviour
     public List<ChemInform> BlendedPowder => blendedPowder;
 
     private PourBehaviour pour;
+
     [SerializeField, ReadOnly] float elapsedPour = 0f;
     [SerializeField, ReadOnly] bool isReact = false;
 
@@ -54,7 +55,7 @@ public class Beaker : MonoBehaviour
         liquidRender.material.SetFloat("_Fill", currentAmount / beakerAmount);
 
         pour = new PourBehaviour();
-        pour.Initialize(head, angleThreshold);
+        pour.Initialize(head);
     }
 
     void Update()
@@ -83,15 +84,24 @@ public class Beaker : MonoBehaviour
 
     public void PourLiquid()
     {
-        if (currentAmount <= 0.01f) return;
-
-        if (blendedPowder.Find(p => p.flag.Equals(ChemFlag.Starch)) == null)
+        if (blendedPowder.Find(p => p.flag.Equals(ChemFlag.Starch)) == null) return;
+        if (currentAmount <= 0f)
         {
-            Debug.Log("녹말이 없습니다.");
-            return;   
-        }
+            pour.Stop();
+            return;
+        }   
+        
+        float angle = Vector3.Angle(head.up, Vector3.up);
 
-        pour.UpdatePour();
+        if (angle > angleThreshold)
+        {
+            pour.Start();
+        }
+        else
+        {
+            pour.Stop();
+        }
+        
     }
 
     // 추가할 화학용품, 증가량
@@ -130,7 +140,7 @@ public class Beaker : MonoBehaviour
         if (chem == null)
         {
             chem = new ChemInform(flag);
-            blendedLiquid.Add(chem);
+            blendedPowder.Add(chem);
         }
         chem.amount++;
     }
@@ -243,24 +253,6 @@ public class Beaker : MonoBehaviour
         Observer Pattern.
     */
 
-    [SerializeField] private Beaker otherBeaker;
-
-    [SerializeField] private List<ChemInform> testLiquid = new();          //비커에 들어있는 혼합용액 상태.
-    [SerializeField] private List<ChemInform> testPowder = new();          //비커에 들어있는 혼합가루 상태.
-
-    void AddSample()
-    {
-        foreach (var m in testLiquid)
-        {
-            AddLiquid(m.flag, m.amount);
-        }
-
-        foreach (var m in testPowder)
-        {
-            AddPowder(m.flag, (int)m.amount);
-        }
-    }
-
     [Button("AddSample"), HideField] public bool btn2;
 
     // 파티클이 비커의 콜라이더와 충돌할 때 호출
@@ -272,7 +264,6 @@ public class Beaker : MonoBehaviour
             //혼합물인지 일반 liquid 인지 체크
             if (other.GetComponentInParent<Beaker>() != null)
             {
-                Debug.Log("비커로 부터 나온 Liquid...");
                 Beaker b = other.GetComponentInParent<Beaker>();
 
                 b.TransferLiquid(this);
