@@ -1,3 +1,4 @@
+using CustomInspector;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -24,6 +25,10 @@ public class EruptionSequenceVFX : MonoBehaviour
     public Transform ashHeap;   // 크기 변하는 빈 오브젝트(스케일 변경)
     public Transform ashMesh;   // 실제 렌더되는 메쉬(없으면 ashHeap 사용)
 
+    [Header("재 더미 머테리얼")]
+    [Tooltip("노이즈 O")] public Material growMaterial;
+    [Tooltip("노이즈 X")] public Material defaultMaterial;
+    [ReadOnly] public bool noiseOn = true;
     // ───────── VFX 플래그 ─────────
     [Header("VFX Flags (VFXManager에 등록된 키)")]
     public VFXFlag flameBurstFlag = VFXFlag.FlameFx2;
@@ -110,6 +115,20 @@ public class EruptionSequenceVFX : MonoBehaviour
     {
         if (ignitable) ignitable.onIgnited.RemoveListener(StartEruption);
         CleanupVisual();
+    }
+
+    //public void EnableNoise() => ashMaterial.SetFloat("_NoiseEnabled", 1f);
+    //public void DisableNoise() => ashMaterial.SetFloat("_NoiseEnabled", 0f);
+
+    void ApplyMaterial(Material mat)
+    {
+        if (ashMesh != null)
+        {
+            var rend = ashMesh.GetComponent<Renderer>();
+            if (rend != null && mat != null)
+                rend.material = mat;
+        }
+
     }
 
     // ───────────────── 헬퍼 ─────────────────
@@ -200,6 +219,8 @@ public class EruptionSequenceVFX : MonoBehaviour
         {
             ashMesh.localScale = Vector3.zero;      // 시작 시 숨김
             ashMesh.gameObject.SetActive(false);
+            ApplyMaterial(defaultMaterial);
+            //DisableNoise();
         }
 
         StartCoroutine(CoErupt());
@@ -213,7 +234,12 @@ public class EruptionSequenceVFX : MonoBehaviour
         float delay = burnRef ? burnRef.burnDuration : warmup;
         if (delay > 0f) yield return new WaitForSeconds(delay);
 
-        if (ashMesh) ashMesh.gameObject.SetActive(true);
+        if (ashMesh)
+        {
+            ashMesh.gameObject.SetActive(true);
+            ApplyMaterial(growMaterial);
+            //EnableNoise();
+        }
 
         // 1) VFX 스폰
         VFX flame = null, smoke = null, ash = null;
@@ -271,7 +297,7 @@ public class EruptionSequenceVFX : MonoBehaviour
         }
 
         // 같은 타이밍에 VisualEffect 프리팹도 직접 스폰
-        if(visualEffectPrefab)
+        if (visualEffectPrefab)
         {
             var vA = visualAnchor ? visualAnchor : fA; // flame과 동일 앵커
             var pos = vA.position + Vector3.up * visualYOffset;
@@ -310,6 +336,9 @@ public class EruptionSequenceVFX : MonoBehaviour
         if (flame) flame.Stop();
         if (smoke) smoke.Stop();
         if (ash) ash.Stop();
+
+        ApplyMaterial(defaultMaterial);
+        //DisableNoise();
 
         // VisualEffect도 함께 정리
         CleanupVisual();
