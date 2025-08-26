@@ -50,12 +50,12 @@ public class ExperimentResetHard : MonoBehaviour
         if (useLeftSecondaryPolling)
         {
             var left = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
-            if (left.TryGetFeatureValue(UnityEngine.InputSystem.CommonUsages.secondaryButton, out bool v) && v) pressed = true;
+            if (left.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out bool v) && v) pressed = true;
         }
         else if (useRightSecondaryPolling)
         {
             var right = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
-            if (right.TryGetFeatureValue(UnityEngine.InputSystem.CommonUsages.secondaryButton, out bool v) && v) pressed = true;
+            if (right.TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out bool v) && v) pressed = true;
         }
 
         if (pressed && !_prev) HardReset();
