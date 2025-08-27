@@ -10,6 +10,7 @@ TagManager:
   - Beaker
   - Blend
   - Pen
+  - ClockBeaker
   layers:
   - Default
   - TransparentFX
