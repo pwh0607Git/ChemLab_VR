@@ -2906,6 +2906,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 696a5b7b2a8256143bf0de466f491d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prewarmOnStart: 1
+  prewarmIntent: Lerning
+  showPrewarmOutput: 0
   inputMessage: 
   conversation: {fileID: 11400000, guid: 37d53527d59e2b242b344556b86c7a63, type: 2}
   b1: 0
@@ -2966,8 +2969,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC548\uB155\uD558\uC138\uC694."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eb953628973d5784aab9b33b6b199fed, type: 2}
-  m_sharedMaterial: {fileID: -6103450555103165527, guid: eb953628973d5784aab9b33b6b199fed, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7f7c04211c75ac54b8cfa6d9bd88d6f6, type: 2}
+  m_sharedMaterial: {fileID: 1299476639885897452, guid: 7f7c04211c75ac54b8cfa6d9bd88d6f6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
