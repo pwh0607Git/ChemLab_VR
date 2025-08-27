@@ -576,10 +576,10 @@ MonoBehaviour:
   smokeLoop: 1
   ashLoop: 1
   warmup: 3
-  eruptionDuration: 4
+  eruptionDuration: 8
   smolderDuration: 3
   targetScaleXZ: {x: 3.5, y: 3.5}
-  targetHeight: 3.5
+  targetHeight: 6
   growthCurve:
     serializedVersion: 2
     m_Curve:
@@ -604,7 +604,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  smooth: 8
+  smooth: 100
   keepAshMeshAtEnd: 1
   flameYOffset: 0.06
   smokeYOffset: 0
@@ -8013,7 +8013,10 @@ MonoBehaviour:
   vfxAnchor: {fileID: 2379881985874745882}
   loopFlame: 1
   grab: {fileID: 0}
-  turnOnWhenGrabbed: 1
+  turnOnWhenGrabbed: 0
+  flameAction: {fileID: 4806770101535410126, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  holdToFlame: 0
+  requireGrabToUse: 1
   igniteMask:
     serializedVersion: 2
     m_Bits: 8
@@ -8397,7 +8400,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1872516742}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
