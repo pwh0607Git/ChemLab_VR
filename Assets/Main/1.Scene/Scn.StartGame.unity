@@ -1839,7 +1839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0f4e022451a06946a59b28a0702a39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextSceneName: Scn.InGame
+  nextSceneName: Scn.Tutoral
   nextSceneIndex: -1
   loadingRoot: {fileID: 1532803337}
   loadingText: {fileID: 1190795566}
