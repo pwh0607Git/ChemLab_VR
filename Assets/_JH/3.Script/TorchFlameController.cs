@@ -5,13 +5,21 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class TorchFlameController : MonoBehaviour
 {
     [Header("VFX Manager 설정")]
-    public VFXFlag torchFlameFlag = VFXFlag.FlameFx2;  // 매니저에 등록된 토치 불  VFX 플래그
-    public Transform vfxAnchor; // 불 위치( 없으면 이 오브젝트)
-    public bool loopFlame = true; // 토치 불은 루프
+    public VFXFlag torchFlameFlag = VFXFlag.FlameFx2;
+    public Transform vfxAnchor;
+    public bool loopFlame = true;
 
     [Header("XR Grab 동작")]
     [SerializeField] XRGrabInteractable grab;
-    [SerializeField] bool turnOnWhenGrabbed = true;
+    [SerializeField] bool turnOnWhenGrabbed = true; // ← 필요 없으면 false
+
+    [Header("버튼으로 점화 제어 (Input System)")]
+    [Tooltip("‘불 켜기’로 쓸 액션. 예: RightHand/primaryButton, triggerPressed 등")]
+    [SerializeField] InputActionReference flameAction;  // ← 추가
+    [Tooltip("버튼을 누르는 동안 ON, 떼면 OFF (true). false면 누를 때마다 토글.")]
+    [SerializeField] bool holdToFlame = true;           // ← 추가
+    [Tooltip("그랩 중일 때만 버튼 입력을 받도록 제한")]
+    [SerializeField] bool requireGrabToUse = true;       // ← 추가
 
     [Header("쏘면서 태우기(점화 판정)")]
     [SerializeField] LayerMask igniteMask;
@@ -20,21 +28,21 @@ public class TorchFlameController : MonoBehaviour
     [SerializeField, Min(0f)] float flameRadius = 0.035f;
     [SerializeField, Min(0f)] float igniteCooldown = 0.05f;
     [SerializeField] bool drawDebugRay = false;
-
-    [Tooltip("노즐 앞에세 얼마나 떨어진 지점부터 판정을 시작할지")]
+    [Tooltip("노즐 앞에서 얼마나 떨어진 지점부터 판정을 시작할지")]
     [SerializeField, Min(0f)] float nozzleOffset = 0.2f;
 
     public bool IsOn { get; private set; } = false;
 
-    // 스폰된 불 VFX 인스턴스
     private VFX _flameVfx;
     float _igniteTimer;
-
     readonly Collider[] _hits = new Collider[8];
+
+    // --- NEW: 내부 상태
+    bool _isGrabbed = false;
 
     private void Reset()
     {
-        if(!vfxAnchor)
+        if (!vfxAnchor)
         {
             var t = transform.Find("TorchVFXAnchor");
             if (t) vfxAnchor = t;
@@ -47,6 +55,7 @@ public class TorchFlameController : MonoBehaviour
         if (!vfxAnchor) vfxAnchor = transform;
         if (!grab) grab = GetComponent<XRGrabInteractable>();
     }
+
     private void OnEnable()
     {
         if (grab)
@@ -54,7 +63,11 @@ public class TorchFlameController : MonoBehaviour
             grab.selectEntered.AddListener(OnGrab);
             grab.selectExited.AddListener(OnRelease);
         }
+
+        // (선택) 시작부터 항상 액션을 켜두고 싶다면 Enable()만 호출하고 콜백은 그랩에서 연결
+        if (flameAction) flameAction.action.Enable();
     }
+
     private void OnDisable()
     {
         if (grab)
@@ -62,17 +75,19 @@ public class TorchFlameController : MonoBehaviour
             grab.selectEntered.RemoveListener(OnGrab);
             grab.selectExited.RemoveListener(OnRelease);
         }
+        UnsubscribeFlameAction();
         SetFlame(false); // 안전 정리
+        if (flameAction) flameAction.action.Disable();
     }
 
     void Update()
     {
-        // 불 켜져 있는 동안, 매 프레임 앵커와 동기화
+        // 불 VFX 위치/회전 동기화
         if (_flameVfx != null && vfxAnchor != null)
         {
             var t = _flameVfx.transform;
             t.position = vfxAnchor.position;
-            t.rotation = vfxAnchor.rotation;   // 새로 나오는 입자는 항상 forward(+Z)로
+            t.rotation = vfxAnchor.rotation;
         }
 
         if (!IsOn || !vfxAnchor) return;
@@ -80,9 +95,9 @@ public class TorchFlameController : MonoBehaviour
         _igniteTimer -= Time.deltaTime;
         if (_igniteTimer > 0f) return;
 
-        // 🔥 불꽃 "부피" 전체에 대한 겹침 판정 (노즐에서 앞으로 flameLength 길이)
-        Vector3 p0 = vfxAnchor.position + vfxAnchor.forward * nozzleOffset;                          // 시작점(노즐)
-        Vector3 p1 = p0 + vfxAnchor.forward * flameLength;        // 끝점(제트 끝)
+        // 불꽃 부피 판정
+        Vector3 p0 = vfxAnchor.position + vfxAnchor.forward * nozzleOffset;
+        Vector3 p1 = p0 + vfxAnchor.forward * flameLength;
         int count = Physics.OverlapCapsuleNonAlloc(
             p0, p1, flameRadius, _hits, igniteMask, QueryTriggerInteraction.Collide);
 
@@ -97,14 +112,12 @@ public class TorchFlameController : MonoBehaviour
             var col = _hits[i];
             if (!col) continue;
 
-
-            // 자식 트리거(IgniteCollider)를 맞아도 부모 Wick에서 스크립트 찾기
             var wick = col.GetComponentInParent<WickIgnitable>();
-            if (wick != null) 
+            if (wick != null)
             {
-                wick.TryIgnite();            // 심지 점화
+                wick.TryIgnite();
                 _igniteTimer = igniteCooldown;
-                break;                       // 한 번만 점화하고 다음 프레임에 다시 판정
+                break;
             }
         }
     }
@@ -112,12 +125,61 @@ public class TorchFlameController : MonoBehaviour
     // XR Grab 이벤트
     void OnGrab(SelectEnterEventArgs _)
     {
+        _isGrabbed = true;
         if (turnOnWhenGrabbed) SetFlame(true);
+        SubscribeFlameAction();   // ← 버튼 입력 리스너 연결
     }
 
     void OnRelease(SelectExitEventArgs _)
     {
-        if (turnOnWhenGrabbed) SetFlame(false); ;
+        _isGrabbed = false;
+        if (turnOnWhenGrabbed) SetFlame(false);
+        UnsubscribeFlameAction(); // ← 버튼 입력 리스너 해제
+        if (holdToFlame) SetFlame(false);  // 홀드 방식이면 놓자마자 OFF 보장
+    }
+
+    // --- NEW: 액션 구독/해제
+    void SubscribeFlameAction()
+    {
+        if (flameAction == null) return;
+        var a = flameAction.action;
+        a.performed -= OnFlamePerformed; // 중복 방지
+        a.canceled -= OnFlameCanceled;
+        a.performed += OnFlamePerformed;
+        a.canceled += OnFlameCanceled;
+    }
+
+    void UnsubscribeFlameAction()
+    {
+        if (flameAction == null) return;
+        var a = flameAction.action;
+        a.performed -= OnFlamePerformed;
+        a.canceled -= OnFlameCanceled;
+    }
+
+    // --- NEW: 액션 콜백
+    void OnFlamePerformed(InputAction.CallbackContext ctx)
+    {
+        if (requireGrabToUse && !_isGrabbed) return;
+
+        if (holdToFlame)
+        {
+            SetFlame(true);     // 누르는 순간 ON
+        }
+        else
+        {
+            SetFlame(!IsOn);    // 토글 모드
+        }
+    }
+
+    void OnFlameCanceled(InputAction.CallbackContext ctx)
+    {
+        if (requireGrabToUse && !_isGrabbed) return;
+
+        if (holdToFlame)
+        {
+            SetFlame(false);    // 떼는 순간 OFF
+        }
     }
 
     public void SetFlame(bool on)
@@ -127,7 +189,6 @@ public class TorchFlameController : MonoBehaviour
 
         if (on)
         {
-            // 켜기 :스폰 (이미 있으면 재생)
             if (_flameVfx == null)
             {
                 var anchor = vfxAnchor != null ? vfxAnchor : transform;
@@ -135,9 +196,9 @@ public class TorchFlameController : MonoBehaviour
                     torchFlameFlag,
                     Vector3.zero,
                     anchor.rotation,
-                    anchor, // 토치에 붙여서 이동
+                    anchor,
                     loopFlame
-                    );
+                );
                 if (_flameVfx == null)
                 {
                     Debug.LogWarning("[토치] 불 VFX가 스폰되지 않았습니다");
@@ -152,7 +213,7 @@ public class TorchFlameController : MonoBehaviour
         }
         else
         {
-            if(_flameVfx != null)
+            if (_flameVfx != null)
             {
                 _flameVfx.Stop();
                 _flameVfx = null;
