@@ -85,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &2575600495900251671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,7 +119,6 @@ MonoBehaviour:
   titleText: {fileID: 1124360842136531477}
   descText: {fileID: 6898909651538285120}
   stepsText: {fileID: 7947246136232586331}
-  iconImage: {fileID: 8018330498544585306}
 --- !u!1 &3153058443270344264
 GameObject:
   m_ObjectHideFlags: 0
