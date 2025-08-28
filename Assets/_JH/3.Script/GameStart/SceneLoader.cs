@@ -20,7 +20,7 @@ public class SceneLoader : MonoBehaviour
     bool isLoading;
     CancellationTokenSource cts;
 
-    // ▶ XR Simple Interactable의 Select Entered 이벤트에 이 메서드를 연결하세요.
+    //  XR Simple Interactable의 Select Entered 이벤트에 이 메서드를 연결하세요.
     public async void StartGame()
     {
         if (isLoading) return;
@@ -61,6 +61,20 @@ public class SceneLoader : MonoBehaviour
         if (nextSceneIndex >= 0) SceneManager.LoadScene(nextSceneIndex);
         else if (!string.IsNullOrEmpty(nextSceneName)) SceneManager.LoadScene(nextSceneName);
         else Debug.LogError("[SceneLoader] 다음 씬이 설정되지 않았습니다.");
+    }
+
+    // ▶ Quit 버튼 이벤트
+    public void Quit()
+    {
+        Debug.Log("[SceneLoader] Quit 호출됨");
+
+#if UNITY_EDITOR
+        // 에디터에서 플레이 중지
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        // 빌드된 실행 파일 종료
+        Application.Quit();
+#endif
     }
 
     void ShowLoading(string msg)
