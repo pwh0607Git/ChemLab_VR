@@ -6998,7 +6998,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "NPC\uB97C \uD074\uB9AD\uD574\uC8FC\uC138\uC694"
+  m_text: "\uC2E4\uD5D8\uC744 \uB2E4\uD558\uACE0 NPC\uB97C \n\uD074\uB9AD\uD574\uC8FC\uC138\uC694"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c778a51371949804c9aa976f7e2378b7, type: 2}
   m_sharedMaterial: {fileID: 5852218645417639067, guid: c778a51371949804c9aa976f7e2378b7, type: 2}
@@ -7025,7 +7025,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.6
+  m_fontSize: 18
   m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 1
