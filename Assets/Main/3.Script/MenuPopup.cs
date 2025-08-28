@@ -52,4 +52,15 @@ public class MenuPopup : MonoBehaviour
         transform.position = xrCamera.position + xrCamera.forward * popupDistance;
         transform.rotation = Quaternion.LookRotation(xrCamera.forward, Vector3.up);
     }
+
+    public void clicktest()
+    {
+
+        Debug.Log("클릭테스트");
+    }
+    public void clicktest2()
+    {
+
+        Debug.Log("클릭테스트2");
+    }
 }
