@@ -630,6 +630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resetManager: {fileID: 694386248}
+  sceneResetAll: {fileID: 2129963845}
   primaryButtonAction: {fileID: -2354213955263981005, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   cooldown: 0.3
 --- !u!1 &694386247
@@ -1313,6 +1314,7 @@ Transform:
   - {fileID: 1134314927}
   - {fileID: 694386249}
   - {fileID: 659196548}
+  - {fileID: 2129963844}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1306140718 stripped
@@ -1440,6 +1442,7 @@ GameObject:
   - component: {fileID: 1690652970}
   - component: {fileID: 1690652969}
   - component: {fileID: 1690652968}
+  - component: {fileID: 1690652974}
   m_Layer: 0
   m_Name: Beaker_3_other
   m_TagString: ClockBeaker
@@ -1749,6 +1752,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690652966}
   m_Mesh: {fileID: 4370586879743159886, guid: 44fed6aff454809469effaac1a0b86ed, type: 3}
+--- !u!114 &1690652974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690652966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823d58c8bd54ee143915f4d386bf65c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useWorldSpace: 1
+  resetRigidbodyVelocity: 1
+  restoreOriginalParent: 1
+  captureOnStart: 1
 --- !u!1 &1910583603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1780,6 +1799,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1690652967}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2129963843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2129963844}
+  - component: {fileID: 2129963845}
+  m_Layer: 0
+  m_Name: SceneSoftResetAll
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2129963844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129963843}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1221982752}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2129963845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129963843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc2ec72d32754624785395e509875d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  includeInactive: 1
 --- !u!4 &4937644747714372
 Transform:
   m_ObjectHideFlags: 0
@@ -33520,6 +33584,7 @@ GameObject:
   - component: {fileID: 582943030811034081}
   - component: {fileID: 1736570688022253995}
   - component: {fileID: 1229426124734597286}
+  - component: {fileID: 5073815136199463963}
   m_Layer: 0
   m_Name: Beaker_3_main
   m_TagString: ClockBeaker
@@ -51936,6 +52001,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5073815136199463963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3279665701365898329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823d58c8bd54ee143915f4d386bf65c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useWorldSpace: 1
+  resetRigidbodyVelocity: 1
+  restoreOriginalParent: 1
+  captureOnStart: 1
 --- !u!1 &5074117834735983548
 GameObject:
   m_ObjectHideFlags: 0
@@ -55627,6 +55708,7 @@ GameObject:
   - component: {fileID: 4092091339284717324}
   - component: {fileID: 4760142385329504616}
   - component: {fileID: 3123479613682150604}
+  - component: {fileID: 6249458764503349675}
   m_Layer: 0
   m_Name: Flask_Sodium
   m_TagString: Untagged
@@ -62789,6 +62871,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6249458764503349675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5497491408730641900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823d58c8bd54ee143915f4d386bf65c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useWorldSpace: 1
+  resetRigidbodyVelocity: 1
+  restoreOriginalParent: 1
+  captureOnStart: 1
 --- !u!64 &6250046876579254074
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -68896,6 +68994,7 @@ GameObject:
   - component: {fileID: 6608733816556344721}
   - component: {fileID: 7863352056197650294}
   - component: {fileID: 4005731463414891093}
+  - component: {fileID: 8229479147915487075}
   m_Layer: 0
   m_Name: Flask_Iodine_K
   m_TagString: Untagged
@@ -69235,6 +69334,7 @@ GameObject:
   - component: {fileID: 9204159172340603759}
   - component: {fileID: 4966486701389580764}
   - component: {fileID: 7633802311315964578}
+  - component: {fileID: 9204159172340603760}
   m_Layer: 0
   m_Name: Spoon
   m_TagString: Spoon
@@ -73730,6 +73830,7 @@ GameObject:
   - component: {fileID: 934295501267108647}
   - component: {fileID: 7204262685175499956}
   - component: {fileID: 5962610989655577456}
+  - component: {fileID: 7720310089877832986}
   m_Layer: 0
   m_Name: Flask_Distilled
   m_TagString: Untagged
@@ -76081,6 +76182,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7720310089877832986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7436217486142624205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823d58c8bd54ee143915f4d386bf65c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useWorldSpace: 1
+  resetRigidbodyVelocity: 1
+  restoreOriginalParent: 1
+  captureOnStart: 1
 --- !u!4 &7722540798023798372
 Transform:
   m_ObjectHideFlags: 0
@@ -80882,6 +80999,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8229479147915487075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6875651907039821307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823d58c8bd54ee143915f4d386bf65c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useWorldSpace: 1
+  resetRigidbodyVelocity: 1
+  restoreOriginalParent: 1
+  captureOnStart: 1
 --- !u!4 &8230259387115588355
 Transform:
   m_ObjectHideFlags: 0
@@ -89657,6 +89790,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9204159172340603760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6924284435263688100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823d58c8bd54ee143915f4d386bf65c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useWorldSpace: 1
+  resetRigidbodyVelocity: 1
+  restoreOriginalParent: 1
+  captureOnStart: 1
 --- !u!4 &9207598897965630719
 Transform:
   m_ObjectHideFlags: 0
@@ -89754,7 +89903,6 @@ SceneRoots:
   - {fileID: 6884652741926374693}
   - {fileID: 439678666486605892}
   - {fileID: 170189144}
-  - {fileID: 1221982752}
   - {fileID: 2892071348531363946}
   - {fileID: 4562440649945786724}
   - {fileID: 1983601088382538721}
@@ -89764,3 +89912,4 @@ SceneRoots:
   - {fileID: 8313010843884489074}
   - {fileID: 6444715272727137725}
   - {fileID: 874984743150717509}
+  - {fileID: 1221982752}
