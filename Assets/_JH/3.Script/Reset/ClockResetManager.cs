@@ -20,6 +20,10 @@ public class ClockResetManager : MonoBehaviour
             {
                 if (!b) continue;
                 b.ResetForNextRun();   // Beaker에 구현한 소프트리셋 메서드
+
+                foreach (var r in b.GetComponentsInChildren<ISoftResettable>(includeInactive: true))
+                    r.SoftReset();
+
                 any = true;
             }
         }
@@ -32,10 +36,13 @@ public class ClockResetManager : MonoBehaviour
             {
                 var b = go.GetComponent<Beaker>();
                 if (!b) continue;
+
                 b.ResetForNextRun();
+                foreach (var r in go.GetComponentsInChildren<ISoftResettable>(includeInactive: true))
+                    r.SoftReset();
             }
         }
 
-        Debug.Log("[ClockResetManager] SoftResetClockOnly done.");
+        Debug.Log("[ClockResetManager] SoftResetClockOnly (내용 + 위치) done.");
     }
 }
