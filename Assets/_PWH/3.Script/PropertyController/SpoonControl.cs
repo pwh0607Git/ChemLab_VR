@@ -23,7 +23,7 @@ public class SpoonControl : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag.Equals("Beaker"))
+        if (other.tag.Equals("ClockBeaker"))
         {
             if (currentChemical.Equals(ChemFlag.None)) return;
             
