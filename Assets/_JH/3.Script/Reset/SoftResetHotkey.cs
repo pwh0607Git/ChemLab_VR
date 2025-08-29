@@ -4,10 +4,12 @@ using UnityEngine.InputSystem;
 public class SoftResetHotkey : MonoBehaviour
 {
     [Header("Clock reaction ONLY")]
-    public ClockResetManager resetManager;   // 시계반응 리셋 매니저만 연결
+    public ClockResetManager resetManager;   // (비커 내용 리셋)
+
+    [Header("Scene-wide Reset (옵션)")]
+    public SceneSoftResetAll sceneResetAll;  // (자리/포즈 리셋)
 
     [Header("Input (Input System)")]
-    // XRI Left/Right Interaction 액션맵의 primaryButton 같은 액션을 연결
     public InputActionReference primaryButtonAction;
 
     [Header("Optional")]
@@ -43,13 +45,14 @@ public class SoftResetHotkey : MonoBehaviour
 
     void DoReset()
     {
+        // 1) 비커 내용(시계반응만) 리셋
         if (resetManager != null)
-        {
-            resetManager.SoftResetClockOnly(); // ✅ 시계반응만 소프트리셋
-        }
+            resetManager.SoftResetClockOnly();   // ← 기존 동작 유지
+
+        // 2) 씬 내 모든 ISoftResettable(숟가락/약품통/트레이 등) 자리 리셋
+        if (sceneResetAll != null)
+            sceneResetAll.SoftResetAll();
         else
-        {
-            Debug.LogWarning("[SoftResetHotkey] ClockResetManager reference is missing.");
-        }
+            Debug.LogWarning("[SoftResetHotkey] SceneSoftResetAll reference is missing.");
     }
 }
