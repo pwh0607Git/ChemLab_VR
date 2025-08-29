@@ -8468,7 +8468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4bc59b4dbf946e4a8e38a1507e3cf08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intentKey: Learning
+  intentKey: Report_Explosion
   questHint: {fileID: 225734974}
   hintCanvasGroup: {fileID: 0}
   fadeOutSec: 0.4
