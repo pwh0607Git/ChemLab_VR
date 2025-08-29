@@ -100,6 +100,24 @@ public class EruptionSequenceVFX : MonoBehaviour
     bool _running;
     GameObject _visualInst;
 
+    // ───────── Visual Y Raise 옵션 ─────────
+    [Header("Visual Raise During Growth")]
+    [Tooltip("분출 성장(0→1) 동안 VisualEffect의 Y를 점진적으로 올릴지")]
+    public bool raiseVisualYDuringGrowth = true;
+
+    [Tooltip("Growth=1일 때 추가로 올릴 높이(m)")]
+    public float visualRaiseHeight = 0.15f;
+
+    [Tooltip("Growth(0~1) → Raise(0~1) 매핑 커브")]
+    public AnimationCurve visualRaiseCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    [Tooltip("앵커 Transform 자체를 올릴지(기본: false면 인스턴스만 올림)")]
+    public bool moveAnchorTransform = false;
+
+    // 내부 상태(복구/기준치)
+    float _visualBaseLocalY;
+    Vector3 _anchorBaseLocalPos;
+
     void Awake()
     {
         if (!centerPoint) centerPoint = transform;
@@ -305,6 +323,16 @@ public class EruptionSequenceVFX : MonoBehaviour
 
             _visualInst = Instantiate(visualEffectPrefab, pos, rot, vA);
 
+            // 로컬 기준 정리(부모 기준으로 정확히 y=visualYOffset에 위치시키기)
+            var t_ = _visualInst.transform;
+            t_.SetParent(vA, false);
+            t_.localPosition = Vector3.up * visualYOffset; // 기준 로컬 Y를 확정
+            _visualBaseLocalY = t_.localPosition.y;
+
+            // 앵커 자체 이동을 선택한 경우, 앵커의 기준 로컬 좌표 저장
+            if (moveAnchorTransform && visualAnchor)
+                _anchorBaseLocalPos = visualAnchor.localPosition;
+
             var ve = _visualInst.GetComponentInChildren<VisualEffect>(true);
             if (ve) ve.Play();
         }
@@ -321,6 +349,26 @@ public class EruptionSequenceVFX : MonoBehaviour
             var desiredHeap = Vector3.Lerp(_heapInitScale, target, g);
             ashHeap.localScale = Vector3.Lerp(ashHeap.localScale, desiredHeap, Time.deltaTime * smooth);
 
+            // VisualEffect Y 올리기
+            if (raiseVisualYDuringGrowth)
+            {
+                float yRaise01 = visualRaiseCurve.Evaluate(g);            // 0~1
+                float yRaise = yRaise01 * visualRaiseHeight;            // 미터 단위
+
+                if (moveAnchorTransform && visualAnchor)                  // 앵커 자체를 올리는 모드
+                {
+                    var ap = _anchorBaseLocalPos;
+                    visualAnchor.localPosition = new Vector3(ap.x, ap.y + yRaise, ap.z);
+                }
+                else if (_visualInst)                                     // 인스턴스만 올리는(기본) 모드
+                {
+                    var vt = _visualInst.transform;
+                    var lp = vt.localPosition;
+                    // 기준 로컬 Y(_visualBaseLocalY) 위에 추가 상승량만 더함
+                    vt.localPosition = new Vector3(lp.x, _visualBaseLocalY + yRaise, lp.z);
+                }
+            }
+
             if (ashMesh)
             {
                 var desiredMesh = Vector3.Lerp(_meshInitScale, target, g);
@@ -336,6 +384,7 @@ public class EruptionSequenceVFX : MonoBehaviour
         if (flame) flame.Stop();
         if (smoke) smoke.Stop();
         if (ash) ash.Stop();
+        if (moveAnchorTransform && visualAnchor) visualAnchor.localPosition = _anchorBaseLocalPos;
 
         ApplyMaterial(defaultMaterial);
         //DisableNoise();

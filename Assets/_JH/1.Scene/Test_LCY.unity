@@ -439,7 +439,7 @@ Transform:
   m_GameObject: {fileID: 557625949}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2634,7 +2634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heap: {fileID: 365529012950160564}
-  secondsForFull: 5
+  secondsForFull: 0.7
   radiusRange: {x: 0.05, y: 0.1}
   heightRange: {x: 0.01, y: 0.02}
   smooth: 8
@@ -7869,8 +7869,8 @@ MonoBehaviour:
   flameYOffset: 0.06
   smokeYOffset: 0
   ashYOffset: 0.1
-  flameAnchor: {fileID: 0}
-  smokeAnchor: {fileID: 0}
+  flameAnchor: {fileID: 557625950}
+  smokeAnchor: {fileID: 557625950}
   ashAnchor: {fileID: 0}
   forceLoopAll: 1
   forceOrientUp: 1
@@ -7880,6 +7880,33 @@ MonoBehaviour:
   visualEffectPrefab: {fileID: 914515844860369859, guid: 24547161218439141b34bf10e216d953, type: 3}
   visualAnchor: {fileID: 557625950}
   visualYOffset: 0
+  raiseVisualYDuringGrowth: 1
+  visualRaiseHeight: 0.3
+  visualRaiseCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveAnchorTransform: 1
 --- !u!65 &7117956361639296931
 BoxCollider:
   m_ObjectHideFlags: 0
