@@ -69309,6 +69309,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powderParticle: {fileID: 7621624635665040972}
+  powderClip: {fileID: 8300000, guid: 36986fa2d7768f54ca737dddbc6b4fa4, type: 3}
+  loopFadeOut: 0.25
   angleThreshold: 60
   pourDuration: 0
 --- !u!4 &7131630948877116971
