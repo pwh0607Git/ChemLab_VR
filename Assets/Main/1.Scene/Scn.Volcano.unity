@@ -14633,6 +14633,7 @@ MonoBehaviour:
       m_Calls: []
   nextSceneName: Scn.Chemical
   sceneLoader: {fileID: 0}
+  clickClip: {fileID: 0}
 --- !u!4 &1405182419490262149
 Transform:
   m_ObjectHideFlags: 0
@@ -57553,6 +57554,8 @@ MonoBehaviour:
   growMaterial: {fileID: 2100000, guid: a7b2a96a111895941b44918d2ba1dc52, type: 2}
   defaultMaterial: {fileID: 2100000, guid: bf0279196df0ac4489da9b3003af7c4b, type: 2}
   noiseOn: 1
+  fireClip: {fileID: 8300000, guid: 0a14704a23f347240b278404afaadcf3, type: 3}
+  loopFadeOut: 0.25
   flameBurstFlag: 4
   smokeLoopFlag: 5
   ashFallFlag: 6
@@ -60606,6 +60609,9 @@ MonoBehaviour:
   igniteCooldown: 0.05
   drawDebugRay: 0
   nozzleOffset: 0.2
+  torchFireClip: {fileID: 8300000, guid: 4490640c118a6ba4096facad144a068e, type: 3}
+  torchLoopClip: {fileID: 8300000, guid: d7b171cb7aa7a5a4fa6b2c44277d880e, type: 3}
+  loopFadeOut: 0.25
 --- !u!1 &6197521070909952192
 GameObject:
   m_ObjectHideFlags: 0
@@ -87305,6 +87311,7 @@ MonoBehaviour:
       m_Calls: []
   nextSceneName: Scn.Chemical
   sceneLoader: {fileID: 0}
+  clickClip: {fileID: 8300000, guid: 1f953f6d59a243d44a2698909a38f9b8, type: 3}
 --- !u!1 &8463581849451554395
 GameObject:
   m_ObjectHideFlags: 0

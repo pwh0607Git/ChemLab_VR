@@ -270,10 +270,11 @@ public class EruptionSequenceVFX : MonoBehaviour
         var fA = flameAnchor ? flameAnchor : centerPoint;
         var sA = smokeAnchor ? smokeAnchor : centerPoint;
         var aA = ashAnchor ? ashAnchor : centerPoint;
+        var vA = visualAnchor ? visualAnchor : fA;
 
         if (VFXManager.Instance != null)
         {
-            SoundManager.Instance.PlaySFXOn(fireClip, visualAnchor, loop: true, volume: 1f, pitch: 1f);
+            SoundManager.Instance.PlaySFXOn(fireClip, vA, loop: true, volume: 1f, pitch: 1f);
             //  Flame
             flame = VFXManager.Instance.SpawnVFX(
                 flameBurstFlag,
@@ -323,7 +324,7 @@ public class EruptionSequenceVFX : MonoBehaviour
         // 같은 타이밍에 VisualEffect 프리팹도 직접 스폰
         if (visualEffectPrefab)
         {
-            var vA = visualAnchor ? visualAnchor : fA; // flame과 동일 앵커
+            //var vA = visualAnchor ? visualAnchor : fA; // flame과 동일 앵커
             var pos = vA.position + Vector3.up * visualYOffset;
             var rot = vA.rotation;
 

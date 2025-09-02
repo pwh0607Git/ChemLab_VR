@@ -17,12 +17,16 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] float spinnerSpeed = 270f; // 도/초
     [SerializeField] float minShowSeconds = 0.6f;
 
+    [Header("버튼 사운드")]
+    public AudioClip clickClip;
+
     bool isLoading;
     CancellationTokenSource cts;
 
     //  XR Simple Interactable의 Select Entered 이벤트에 이 메서드를 연결하세요.
     public async void StartGame()
     {
+        SoundManager.Instance.PlaySFX(clickClip, spatialBlendOverride: 0f);
         if (isLoading) return;
         isLoading = true;
 
