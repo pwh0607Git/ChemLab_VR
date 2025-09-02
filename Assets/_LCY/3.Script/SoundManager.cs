@@ -33,6 +33,11 @@ public class SoundManager : MonoBehaviour
     [Header("SFX")]
     [SerializeField] private AudioMixerGroup sfxMixerGroup;
 
+    [Header("SFX 3D Defaults")]
+    [SerializeField] private float sfxMinDistance = 1f;
+    [SerializeField] private float sfxMaxDistance = 20f;
+    [SerializeField] private AudioRolloffMode sfxRolloff = AudioRolloffMode.Linear;
+
     // 기존 BGM 재생 상태
     private AudioSource bgmA;
     private AudioSource bgmB;
@@ -163,14 +168,18 @@ public class SoundManager : MonoBehaviour
     /// <summary>
     /// SFX 재생(인스턴스 반환). 같은 클립이 여러 번 겹쳐도 각각 정지 가능.
     /// </summary>
-    
+
     //[SerializeField, Min(0f)] float loopFadeOut = 0.25f;
     //private int _loopSfxId = 0; // 루프 사운드 인스턴스 ID
-    public int PlaySFX(AudioClip clip, bool loop = false, float volume = 1f, float pitch = 1f)
+    public int PlaySFX(
+        AudioClip clip, bool loop = false, float volume = 1f, float pitch = 1f,
+        float? spatialBlendOverride = null, float? minDistance = null, float? maxDistance = null, AudioRolloffMode? rolloff = null)
     {
         if (!clip) return 0;
 
         var src = RentSfxSource();
+        ApplySpatial(src, spatialBlendOverride, minDistance, maxDistance, rolloff);
+
         src.clip = clip;
         src.volume = volume;
         src.pitch = pitch;
@@ -191,36 +200,50 @@ public class SoundManager : MonoBehaviour
         return id;
     }
 
-    // 1) 특정 위치에서 재생
-    public int PlaySFXAt(AudioClip clip, Vector3 worldPos, bool loop = false, float volume = 1f, float pitch = 1f)
+
+    // 월드 좌표에서 재생
+    public int PlaySFXAt(
+        AudioClip clip, Vector3 worldPos, bool loop = false, float volume = 1f, float pitch = 1f,
+        float? spatialBlendOverride = null, float? minDistance = null, float? maxDistance = null, AudioRolloffMode? rolloff = null)
     {
         if (!clip) return 0;
+
         var src = RentSfxSource();
         src.transform.SetParent(transform, false);
         src.transform.position = worldPos;
-        src.spatialBlend = sfx2D ? 0f : 1f;
 
-        src.clip = clip; src.volume = volume; src.pitch = pitch; src.loop = loop; src.Play();
+        ApplySpatial(src, spatialBlendOverride, minDistance, maxDistance, rolloff);
+
+        src.clip = clip;
+        src.volume = volume;
+        src.pitch = pitch;
+        src.loop = loop;
+        src.Play();
 
         int id = nextSfxId++;
         sfxById[id] = src;
         if (!sfxIdsByClip.TryGetValue(clip, out var set)) { set = new HashSet<int>(); sfxIdsByClip[clip] = set; }
         set.Add(id);
+
         if (!loop) StartCoroutine(ReleaseWhenDone(id, clip, src));
         return id;
     }
 
-    // 2) 특정 오브젝트에 '붙여' 재생(움직임을 따라감)
-    public int PlaySFXOn(AudioClip clip, Transform target, bool loop = false, float volume = 1f, float pitch = 1f)
+
+    // 타겟을 따라다니며 재생
+    public int PlaySFXOn(
+        AudioClip clip, Transform target, bool loop = false, float volume = 1f, float pitch = 1f,
+        float? spatialBlendOverride = null, float? minDistance = null, float? maxDistance = null, AudioRolloffMode? rolloff = null)
     {
         if (!clip || !target) return 0;
-        var id = PlaySFX(clip, loop, volume, pitch);
+
+        var id = PlaySFX(clip, loop, volume, pitch, spatialBlendOverride, minDistance, maxDistance, rolloff);
         var src = sfxById[id];
         src.transform.SetParent(target, false);
         src.transform.localPosition = Vector3.zero;
-        src.spatialBlend = sfx2D ? 0f : 1f;
         return id;
     }
+
 
     /// <summary>
     /// (호환) 기존 시그니처 유지. 반환 id는 쓰지 않음.
@@ -319,6 +342,24 @@ public class SoundManager : MonoBehaviour
             if (set.Count == 0) sfxIdsByClip.Remove(clip);
         }
     }
+
+    private void ApplySpatial(AudioSource src,
+    float? spatialBlendOverride, float? minDistance, float? maxDistance, AudioRolloffMode? rolloff)
+    {
+        float blend = spatialBlendOverride.HasValue
+            ? Mathf.Clamp01(spatialBlendOverride.Value)
+            : (sfx2D ? 0f : 1f);
+
+        src.spatialBlend = blend;
+
+        if (blend > 0f) // 3D일 때만 거리/롤오프 적용
+        {
+            src.rolloffMode = rolloff ?? sfxRolloff;
+            src.minDistance = Mathf.Max(0.01f, (minDistance ?? sfxMinDistance));
+            src.maxDistance = Mathf.Max(src.minDistance + 0.01f, (maxDistance ?? sfxMaxDistance));
+        }
+    }
+
 
 #if UNITY_EDITOR
     [ContextMenu("DEBUG/Print SFX Pool Status")]
