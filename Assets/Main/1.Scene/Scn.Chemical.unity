@@ -16833,6 +16833,8 @@ MonoBehaviour:
   angleThreshold: 100
   pour:
     head: {fileID: 0}
+  liquidClip: {fileID: 0}
+  loopFadeOut: 0.25
 --- !u!1 &1590882880263123396
 GameObject:
   m_ObjectHideFlags: 0
@@ -39515,6 +39517,8 @@ MonoBehaviour:
   angleThreshold: 100
   pour:
     head: {fileID: 0}
+  liquidClip: {fileID: 0}
+  loopFadeOut: 0.25
 --- !u!4 &3991237376455999807
 Transform:
   m_ObjectHideFlags: 0
@@ -47933,7 +47937,9 @@ MonoBehaviour:
   head: {fileID: 2220936339149677899}
   angleThreshold: 100
   pour:
-    head: {fileID: 0}
+    head: {fileID: 2220936339149677899}
+  liquidClip: {fileID: 8300000, guid: e586b5db55a0c9a4ca9a1719a6590737, type: 3}
+  loopFadeOut: 0.25
 --- !u!4 &4760263699845169746
 Transform:
   m_ObjectHideFlags: 0
@@ -70700,7 +70706,9 @@ MonoBehaviour:
   head: {fileID: 1032908788873234145}
   angleThreshold: 100
   pour:
-    head: {fileID: 0}
+    head: {fileID: 1032908788873234145}
+  liquidClip: {fileID: 8300000, guid: e586b5db55a0c9a4ca9a1719a6590737, type: 3}
+  loopFadeOut: 0.25
 --- !u!4 &7204828328967260717
 Transform:
   m_ObjectHideFlags: 0
@@ -73336,6 +73344,8 @@ MonoBehaviour:
   angleThreshold: 100
   pour:
     head: {fileID: 0}
+  liquidClip: {fileID: 0}
+  loopFadeOut: 0.25
 --- !u!4 &7486863416749447141
 Transform:
   m_ObjectHideFlags: 0
@@ -76062,7 +76072,9 @@ MonoBehaviour:
   head: {fileID: 3842098708845962805}
   angleThreshold: 100
   pour:
-    head: {fileID: 0}
+    head: {fileID: 3842098708845962805}
+  liquidClip: {fileID: 8300000, guid: e586b5db55a0c9a4ca9a1719a6590737, type: 3}
+  loopFadeOut: 0.25
 --- !u!33 &7863538168656825940
 MeshFilter:
   m_ObjectHideFlags: 0
