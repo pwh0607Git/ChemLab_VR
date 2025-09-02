@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
@@ -17,12 +18,18 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] float spinnerSpeed = 270f; // 도/초
     [SerializeField] float minShowSeconds = 0.6f;
 
+    [Header("버튼 사운드")]
+    public AudioClip clickClip;
+    [SerializeField, Range(0f, 0.5f)] float quitDelaySeconds = 0.15f;
+    bool quitting;
+
     bool isLoading;
     CancellationTokenSource cts;
 
     //  XR Simple Interactable의 Select Entered 이벤트에 이 메서드를 연결하세요.
     public async void StartGame()
     {
+        SoundManager.Instance.PlaySFX(clickClip, spatialBlendOverride: 0f);
         if (isLoading) return;
         isLoading = true;
 
@@ -66,7 +73,16 @@ public class SceneLoader : MonoBehaviour
     // ▶ Quit 버튼 이벤트
     public void Quit()
     {
+        if (quitting) return;
         Debug.Log("[SceneLoader] Quit 호출됨");
+        StartCoroutine(QuitRoutine());
+    }
+
+    private IEnumerator QuitRoutine()
+    {
+        quitting = true;
+        if (clickClip) SoundManager.Instance?.PlaySFX(clickClip, spatialBlendOverride: 0f);
+        yield return new WaitForSecondsRealtime(quitDelaySeconds);
 
 #if UNITY_EDITOR
         // 에디터에서 플레이 중지
