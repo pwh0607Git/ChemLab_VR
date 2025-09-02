@@ -2372,6 +2372,7 @@ MonoBehaviour:
   spinnerSpeed: 270
   minShowSeconds: 0.6
   clickClip: {fileID: 8300000, guid: 1f953f6d59a243d44a2698909a38f9b8, type: 3}
+  quitDelaySeconds: 0.25
 --- !u!4 &1139443845
 Transform:
   m_ObjectHideFlags: 0

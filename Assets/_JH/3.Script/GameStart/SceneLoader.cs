@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
@@ -19,6 +20,8 @@ public class SceneLoader : MonoBehaviour
 
     [Header("버튼 사운드")]
     public AudioClip clickClip;
+    [SerializeField, Range(0f, 0.5f)] float quitDelaySeconds = 0.15f;
+    bool quitting;
 
     bool isLoading;
     CancellationTokenSource cts;
@@ -70,7 +73,16 @@ public class SceneLoader : MonoBehaviour
     // ▶ Quit 버튼 이벤트
     public void Quit()
     {
+        if (quitting) return;
         Debug.Log("[SceneLoader] Quit 호출됨");
+        StartCoroutine(QuitRoutine());
+    }
+
+    private IEnumerator QuitRoutine()
+    {
+        quitting = true;
+        if (clickClip) SoundManager.Instance?.PlaySFX(clickClip, spatialBlendOverride: 0f);
+        yield return new WaitForSecondsRealtime(quitDelaySeconds);
 
 #if UNITY_EDITOR
         // 에디터에서 플레이 중지
