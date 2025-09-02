@@ -29,6 +29,11 @@ public class EruptionSequenceVFX : MonoBehaviour
     [Tooltip("노이즈 O")] public Material growMaterial;
     [Tooltip("노이즈 X")] public Material defaultMaterial;
     [ReadOnly] public bool noiseOn = true;
+
+    [Header("불꽃 사운드")]
+    public AudioClip fireClip;
+    [SerializeField, Min(0f)] float loopFadeOut = 0.25f;
+    private int _loopSfxId = 0; // 루프 사운드 인스턴스 ID
     // ───────── VFX 플래그 ─────────
     [Header("VFX Flags (VFXManager에 등록된 키)")]
     public VFXFlag flameBurstFlag = VFXFlag.FlameFx2;
@@ -268,6 +273,7 @@ public class EruptionSequenceVFX : MonoBehaviour
 
         if (VFXManager.Instance != null)
         {
+            SoundManager.Instance.PlaySFXOn(fireClip, visualAnchor, loop: true, volume: 1f, pitch: 1f);
             //  Flame
             flame = VFXManager.Instance.SpawnVFX(
                 flameBurstFlag,
@@ -385,6 +391,7 @@ public class EruptionSequenceVFX : MonoBehaviour
         if (smoke) smoke.Stop();
         if (ash) ash.Stop();
         if (moveAnchorTransform && visualAnchor) visualAnchor.localPosition = _anchorBaseLocalPos;
+        SoundManager.Instance.StopSFX(fireClip, immediate: true, loopFadeOut);
 
         ApplyMaterial(defaultMaterial);
         //DisableNoise();
