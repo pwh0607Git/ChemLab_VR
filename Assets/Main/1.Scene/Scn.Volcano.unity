@@ -44105,7 +44105,7 @@ Transform:
   m_GameObject: {fileID: 7565901217233259586}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -9.715, y: 0.74, z: 14.149}
+  m_LocalPosition: {x: -9.715, y: 0.74, z: 13.56}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -57553,6 +57553,8 @@ MonoBehaviour:
   growMaterial: {fileID: 2100000, guid: a7b2a96a111895941b44918d2ba1dc52, type: 2}
   defaultMaterial: {fileID: 2100000, guid: bf0279196df0ac4489da9b3003af7c4b, type: 2}
   noiseOn: 1
+  fireClip: {fileID: 0}
+  loopFadeOut: 0.25
   flameBurstFlag: 4
   smokeLoopFlag: 5
   ashFallFlag: 6
@@ -60606,6 +60608,9 @@ MonoBehaviour:
   igniteCooldown: 0.05
   drawDebugRay: 0
   nozzleOffset: 0.2
+  torchFireClip: {fileID: 0}
+  torchLoopClip: {fileID: 0}
+  loopFadeOut: 0.25
 --- !u!1 &6197521070909952192
 GameObject:
   m_ObjectHideFlags: 0
