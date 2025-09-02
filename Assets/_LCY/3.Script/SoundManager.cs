@@ -108,6 +108,7 @@ public class SoundManager : MonoBehaviour
         src.outputAudioMixerGroup = sfxMixerGroup;
         src.playOnAwake = false;
         src.spatialBlend = sfx2D ? 0f : 1f; // 2D/3D º±≈√
+        src.ignoreListenerPause = true;
         return src;
     }
 
