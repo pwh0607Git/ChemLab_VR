@@ -29,6 +29,11 @@ public class EruptionSequenceVFX : MonoBehaviour
     [Tooltip("노이즈 O")] public Material growMaterial;
     [Tooltip("노이즈 X")] public Material defaultMaterial;
     [ReadOnly] public bool noiseOn = true;
+
+    [Header("불꽃 사운드")]
+    public AudioClip fireClip;
+    [SerializeField, Min(0f)] float loopFadeOut = 0.25f;
+    private int _loopSfxId = 0; // 루프 사운드 인스턴스 ID
     // ───────── VFX 플래그 ─────────
     [Header("VFX Flags (VFXManager에 등록된 키)")]
     public VFXFlag flameBurstFlag = VFXFlag.FlameFx2;
@@ -265,9 +270,11 @@ public class EruptionSequenceVFX : MonoBehaviour
         var fA = flameAnchor ? flameAnchor : centerPoint;
         var sA = smokeAnchor ? smokeAnchor : centerPoint;
         var aA = ashAnchor ? ashAnchor : centerPoint;
+        var vA = visualAnchor ? visualAnchor : fA;
 
         if (VFXManager.Instance != null)
         {
+            SoundManager.Instance.PlaySFXOn(fireClip, vA, loop: true, volume: 1f, pitch: 1f);
             //  Flame
             flame = VFXManager.Instance.SpawnVFX(
                 flameBurstFlag,
@@ -317,7 +324,7 @@ public class EruptionSequenceVFX : MonoBehaviour
         // 같은 타이밍에 VisualEffect 프리팹도 직접 스폰
         if (visualEffectPrefab)
         {
-            var vA = visualAnchor ? visualAnchor : fA; // flame과 동일 앵커
+            //var vA = visualAnchor ? visualAnchor : fA; // flame과 동일 앵커
             var pos = vA.position + Vector3.up * visualYOffset;
             var rot = vA.rotation;
 
@@ -385,6 +392,7 @@ public class EruptionSequenceVFX : MonoBehaviour
         if (smoke) smoke.Stop();
         if (ash) ash.Stop();
         if (moveAnchorTransform && visualAnchor) visualAnchor.localPosition = _anchorBaseLocalPos;
+        SoundManager.Instance.StopSFX(fireClip, immediate: true, loopFadeOut);
 
         ApplyMaterial(defaultMaterial);
         //DisableNoise();

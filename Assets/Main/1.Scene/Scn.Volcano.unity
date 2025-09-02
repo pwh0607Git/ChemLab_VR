@@ -371,7 +371,7 @@ Transform:
   m_GameObject: {fileID: 225734974}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalPosition: {x: 0, y: 2.206, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5289,21 +5289,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.3454556, y: 0.048831787, z: 1.3454555}
   m_Center: {x: 0, y: 0.024415893, z: 0.000000059604645}
---- !u!4 &447103485244181699
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4940389434433140436}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.642, y: 1.61, z: 11.937}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7866219251461338136}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &451318151541597977
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -14283,7 +14268,7 @@ Transform:
   m_GameObject: {fileID: 7154010404394407084}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.3099995, y: 1.778, z: 12.6}
+  m_LocalPosition: {x: -4.946, y: 0.283, z: 12.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14648,6 +14633,7 @@ MonoBehaviour:
       m_Calls: []
   nextSceneName: Scn.Chemical
   sceneLoader: {fileID: 0}
+  clickClip: {fileID: 0}
 --- !u!4 &1405182419490262149
 Transform:
   m_ObjectHideFlags: 0
@@ -48293,23 +48279,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!1 &4940389434433140436
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 447103485244181699}
-  - component: {fileID: 6327984180435004653}
-  m_Layer: 0
-  m_Name: Reflection Probe
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
 --- !u!114 &4946369801288832358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57585,6 +57554,8 @@ MonoBehaviour:
   growMaterial: {fileID: 2100000, guid: a7b2a96a111895941b44918d2ba1dc52, type: 2}
   defaultMaterial: {fileID: 2100000, guid: bf0279196df0ac4489da9b3003af7c4b, type: 2}
   noiseOn: 1
+  fireClip: {fileID: 8300000, guid: 0a14704a23f347240b278404afaadcf3, type: 3}
+  loopFadeOut: 0.25
   flameBurstFlag: 4
   smokeLoopFlag: 5
   ashFallFlag: 6
@@ -60638,6 +60609,9 @@ MonoBehaviour:
   igniteCooldown: 0.05
   drawDebugRay: 0
   nozzleOffset: 0.2
+  torchFireClip: {fileID: 8300000, guid: 4490640c118a6ba4096facad144a068e, type: 3}
+  torchLoopClip: {fileID: 8300000, guid: d7b171cb7aa7a5a4fa6b2c44277d880e, type: 3}
+  loopFadeOut: 0.25
 --- !u!1 &6197521070909952192
 GameObject:
   m_ObjectHideFlags: 0
@@ -61691,39 +61665,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8604041652911851648}
   m_Mesh: {fileID: -7878663329961348854, guid: 514ed45cae94daf4dbb5a0b44dc0ec69, type: 3}
---- !u!215 &6327984180435004653
-ReflectionProbe:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4940389434433140436}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Type: 0
-  m_Mode: 1
-  m_RefreshMode: 0
-  m_TimeSlicingMode: 0
-  m_Resolution: 1024
-  m_UpdateFrequency: 0
-  m_BoxSize: {x: 25.885262, y: 10, z: 16.360115}
-  m_BoxOffset: {x: -7.942631, y: 0, z: -3.1800585}
-  m_NearClip: 0.3
-  m_FarClip: 1000
-  m_ShadowDistance: 100
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.70661265, g: 0.72165114, b: 0.745283, a: 0}
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IntensityMultiplier: 0.53
-  m_BlendDistance: 1
-  m_HDR: 1
-  m_BoxProjection: 0
-  m_RenderDynamicObjects: 0
-  m_UseOcclusionCulling: 1
-  m_Importance: 1
-  m_CustomBakedTexture: {fileID: 0}
 --- !u!1 &6328713150427983248
 GameObject:
   m_ObjectHideFlags: 0
@@ -81384,7 +81325,6 @@ Transform:
   - {fileID: 8398638674073211154}
   - {fileID: 8797552762123274740}
   - {fileID: 1392535124476444046}
-  - {fileID: 447103485244181699}
   - {fileID: 2804855439011661917}
   - {fileID: 7698909840212733643}
   - {fileID: 4965735100773959961}
@@ -87371,6 +87311,7 @@ MonoBehaviour:
       m_Calls: []
   nextSceneName: Scn.Chemical
   sceneLoader: {fileID: 0}
+  clickClip: {fileID: 8300000, guid: 1f953f6d59a243d44a2698909a38f9b8, type: 3}
 --- !u!1 &8463581849451554395
 GameObject:
   m_ObjectHideFlags: 0

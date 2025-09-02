@@ -31,6 +31,12 @@ public class TorchFlameController : MonoBehaviour
     [Tooltip("노즐 앞에서 얼마나 떨어진 지점부터 판정을 시작할지")]
     [SerializeField, Min(0f)] float nozzleOffset = 0.2f;
 
+    [Header("토치 사운드 클립")]
+    public AudioClip torchFireClip;
+    public AudioClip torchLoopClip;
+    [SerializeField, Min(0f)] float loopFadeOut = 0.25f;
+    private int _loopSfxId = 0; // 루프 사운드 인스턴스 ID
+
     public bool IsOn { get; private set; } = false;
 
     private VFX _flameVfx;
@@ -163,23 +169,16 @@ public class TorchFlameController : MonoBehaviour
         if (requireGrabToUse && !_isGrabbed) return;
 
         if (holdToFlame)
-        {
             SetFlame(true);     // 누르는 순간 ON
-        }
         else
-        {
-            SetFlame(!IsOn);    // 토글 모드
-        }
+            SetFlame(!IsOn);
     }
 
     void OnFlameCanceled(InputAction.CallbackContext ctx)
     {
         if (requireGrabToUse && !_isGrabbed) return;
-
         if (holdToFlame)
-        {
-            SetFlame(false);    // 떼는 순간 OFF
-        }
+            SetFlame(false);     // 사운드는 SetFlame에서 처리
     }
 
     public void SetFlame(bool on)
@@ -193,12 +192,7 @@ public class TorchFlameController : MonoBehaviour
             {
                 var anchor = vfxAnchor != null ? vfxAnchor : transform;
                 _flameVfx = VFXManager.Instance.SpawnVFX(
-                    torchFlameFlag,
-                    Vector3.zero,
-                    anchor.rotation,
-                    anchor,
-                    loopFlame
-                );
+                    torchFlameFlag, Vector3.zero, anchor.rotation, anchor, loopFlame);
                 if (_flameVfx == null)
                 {
                     Debug.LogWarning("[토치] 불 VFX가 스폰되지 않았습니다");
@@ -210,6 +204,9 @@ public class TorchFlameController : MonoBehaviour
             {
                 _flameVfx.Play();
             }
+
+            // 여기서 오디오 시작
+            StartTorchAudio();
         }
         else
         {
@@ -218,6 +215,35 @@ public class TorchFlameController : MonoBehaviour
                 _flameVfx.Stop();
                 _flameVfx = null;
             }
+
+            // 여기서 오디오 정지(루프 페이드아웃)
+            StopTorchAudio();
         }
+    }
+
+    // SFX
+    void StartTorchAudio()
+    {
+        var anchor = vfxAnchor != null ? vfxAnchor : transform;
+
+        // 점화 원샷
+        if (torchFireClip)
+            SoundManager.Instance.PlaySFXOn(torchFireClip, anchor, loop: false, volume: 1f, pitch: 1f);
+
+        // 히스/불꽃 루프 (중복 재생 방지)
+        if (_loopSfxId == 0 && torchLoopClip)
+            _loopSfxId = SoundManager.Instance.PlaySFXOn(torchLoopClip, anchor, loop: true, volume: 1f, pitch: 1f);
+    }
+    void StopTorchAudio()
+    {
+        // 루프 사운드만 부드럽게 페이드아웃
+        if (_loopSfxId != 0)
+        {
+            SoundManager.Instance.StopSFXById(_loopSfxId, immediate: false, fadeOutSeconds: loopFadeOut);
+            _loopSfxId = 0;
+        }
+        // (안전망) 혹시 남아있을 수 있는 동일 클립 일괄 정지 원하면 아래 주석 해제
+        if (torchFireClip) SoundManager.Instance.StopSFX(torchFireClip, immediate: true);
+        if (torchLoopClip) SoundManager.Instance.StopSFX(torchLoopClip, immediate: true);
     }
 }
