@@ -259,13 +259,19 @@ public class MenuPopup : MonoBehaviour
     public void ExitGame()
     {
         Debug.Log("게임 종료합니다");
-        // Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // Editor에서 Play모드 종료
+#else
+    Application.Quit(); // 빌드/실행파일에서 게임 종료
+#endif
+
     }
     void MoveToCameraFront()
     {
-        if (xrCamera == null) xrCamera = Camera.main.transform;
-        popupPanel.transform.position = xrCamera.position + xrCamera.forward * popupDistance;
-        popupPanel.transform.rotation = Quaternion.LookRotation(xrCamera.forward, xrCamera.up);
+        if (xrCamera == null)
+            xrCamera = FindXRCamera();
+        if (xrCamera == null) return; // 예외 방지
+
         popupPanel.transform.position = xrCamera.position + xrCamera.forward * popupDistance;
         popupPanel.transform.rotation = Quaternion.LookRotation(xrCamera.forward, xrCamera.up);
     }
