@@ -1058,6 +1058,7 @@ GameObject:
   - component: {fileID: 8074089451182945106}
   - component: {fileID: 6766920291166024062}
   - component: {fileID: 7287522192973488967}
+  - component: {fileID: 6872599485091738483}
   m_Layer: 5
   m_Name: IngameUI
   m_TagString: Untagged
@@ -1177,6 +1178,25 @@ MonoBehaviour:
   triggerClickR: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   btnMenu: {fileID: -2391875104136732214, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   sliderSensitivity: 0.5
+--- !u!114 &6872599485091738483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5683695404721520181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c698ec3c6c9a4154cbde4537e5e95d12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: 8161847cae780fd418d883c1724c64cf, type: 2}
+  masterVolume: {fileID: 3923076051191668116}
+  bgmVolume: {fileID: 0}
+  sfxVolume: {fileID: 0}
+  masterParam: MASTER
+  bgmParam: BGM
+  sfxParam: SFX
 --- !u!1 &6329569299700669556
 GameObject:
   m_ObjectHideFlags: 0
