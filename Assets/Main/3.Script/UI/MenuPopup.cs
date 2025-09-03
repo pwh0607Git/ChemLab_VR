@@ -2,74 +2,83 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.UI;
-#if XR_CORE_UTILS_EXISTS // CoreUtils가 있을 때만
+#if XR_CORE_UTILS_EXISTS
 using Unity.XR.CoreUtils;
 #endif
-
 
 public class MenuPopup : MonoBehaviour
 {
     [SerializeField] Transform xrCamera;
     public float popupDistance = 2.0f;
     public GameObject popupPanel;
-    public GameObject exitPopupPanel; // PopUP_Image 오브젝트
+    public GameObject exitPopupPanel;
+    public GameObject soundPopupPanel;
 
-    // UI
-    public TMP_Text txtSliderLabel;
-    public Slider targetSlider;
-    public TMP_Text txtContinue;
-    public TMP_Text txtExit;
+    // ------------------ [사운드팝업(음량조절)] ------------------
+    [Header("사운드팝업 - 텍스트/슬라이더")]
+    public TMP_Text masterLabel;       // "전체 음량"
+    public TMP_Text bgmLabel;          // "배경 음악"
+    public TMP_Text sfxLabel;          // "효과음"
+    public TMP_Text closeText;         // "닫기"
+    public Slider masterSlider;
+    public Slider bgmSlider;
+    public Slider sfxSlider;
 
-    // Exit Popup용 텍스트
-    public TMP_Text exitPopupContinueText; // PopUP_Image의 "계속"
-    public TMP_Text exitPopupEndGameText;  // PopUP_Image의 "게임종료"
+    // ------------------ [기존 메뉴팝업] ------------------
+    [Header("메인팝업 - 텍스트")]
+    public TMP_Text txtSound;          // "음량 조절"
+    public TMP_Text txtContinue;       // "게임 계속"
+    public TMP_Text txtExit;           // "게임 종료"
 
-    public Color highlightColor = Color.green, normalColor = Color.white;
+    // ------------------ [게임종료팝업] ------------------
+    [Header("게임종료팝업 - 텍스트")]
+    public TMP_Text exitPopupContinueText;
+    public TMP_Text exitPopupEndGameText;
+
+    // ------------------ [인풋/컬러] ------------------
+    [Header("인풋 & 컬러")]
+    public InputActionReference stickInput;
+    public InputActionReference triggerClickR;
+    public InputActionReference btnMenu;
+    public Color highlightColor = Color.green;
+    public Color normalColor = Color.white;
     public Color sliderHighlightColor = Color.yellow;
 
-    public InputActionReference stickInput;      // XR 오른쪽 스틱
-    public InputActionReference triggerClickR;   // 트리거
-    public InputActionReference btnMenu;
+    // ---------- 메뉴 선택 인덱스 ----------
+    enum MenuItem { Sound, Continue, Exit }
+    MenuItem currentSelection = MenuItem.Sound;
 
-    // 메뉴 선택 인덱스
-    enum MenuItem { Slider, Continue, Exit }
-    MenuItem currentSelection = MenuItem.Slider;
+    // ---------- 사운드팝업 선택 인덱스 ----------
+    enum SoundPopupItem { Master, BGM, SFX, Close }
+    int soundPopupSelection = 0; // 0~3
 
-    // Exit Popup 선택 인덱스
+    // ---------- 게임종료 팝업 ----------
     enum ExitPopupMenu { Continue, Exit }
     ExitPopupMenu exitPopupSelection = ExitPopupMenu.Continue;
 
-    // 입력 딜레이
+    // ---------- 입력 관련 ----------
     float inputBufferTime = 0.25f, lastInputTime = 0f;
     float exitPopupInputBufferTime = 0.25f, exitPopupLastInputTime = 0f;
-
-    // 슬라이더 감도
+    float soundPopupInputBufferTime = 0.25f, soundPopupLastInputTime = 0f;
     public float sliderSensitivity = 0.7f;
 
     bool isPaused = false;
     bool isExitPopupActive = false;
+    bool isSoundPopupActive = false;
 
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        // 씬이 바뀔 때마다 자동으로 XR카메라를 다시 찾도록 이벤트 연결
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
-
     void OnDestroy()
     {
-        // 씬 이벤트 해제
         UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
     }
-
-    // 씬 전환 시마다 호출됨
     void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
     {
-        // 새 씬에서 XR카메라(혹은 Main Camera) 찾기
         xrCamera = FindXRCamera();
     }
-
-    // XR카메라를 자동으로 찾아주는 함수
     Transform FindXRCamera()
     {
 #if XR_CORE_UTILS_EXISTS
@@ -77,7 +86,6 @@ public class MenuPopup : MonoBehaviour
         if (xrOrigin != null && xrOrigin.Camera != null)
             return xrOrigin.Camera.transform;
 #endif
-
         var mainCam = Camera.main;
         if (mainCam != null)
             return mainCam.transform;
@@ -89,7 +97,6 @@ public class MenuPopup : MonoBehaviour
         stickInput?.action.Enable();
         triggerClickR?.action.Enable();
         btnMenu?.action.Enable();
-
         triggerClickR.action.performed += OnTriggerClick;
         btnMenu.action.performed += OnMenuPressed;
     }
@@ -97,7 +104,6 @@ public class MenuPopup : MonoBehaviour
     {
         triggerClickR.action.performed -= OnTriggerClick;
         btnMenu.action.performed -= OnMenuPressed;
-
         stickInput?.action.Disable();
         triggerClickR?.action.Disable();
         btnMenu?.action.Disable();
@@ -107,103 +113,148 @@ public class MenuPopup : MonoBehaviour
     {
         if (!isPaused) return;
 
-        // ----------- 1. 팝업이 켜진 경우 ----------
+        // 1. 게임종료 팝업
         if (isExitPopupActive)
         {
             Vector2 axis = stickInput.action.ReadValue<Vector2>();
             float now = Time.unscaledTime;
-
-            // 좌/우 입력으로 커서 이동 (좌 = 계속, 우 = 게임종료)
             if (Mathf.Abs(axis.x) > 0.6f && now - exitPopupLastInputTime > exitPopupInputBufferTime)
             {
                 int dir = (axis.x > 0) ? 1 : -1;
                 int idx = (int)exitPopupSelection + dir;
-                idx = Mathf.Clamp(idx, 0, 1); // 0~1
+                idx = Mathf.Clamp(idx, 0, 1);
                 exitPopupSelection = (ExitPopupMenu)idx;
                 exitPopupLastInputTime = now;
                 UpdateExitPopupHighlight();
             }
-            return; // 팝업이 켜진 동안에는 아래 코드 실행 안 함!
+            return;
         }
 
-        // ----------- 2. 메인 메뉴 입력 ----------
+        // 2. 사운드 팝업
+        if (isSoundPopupActive)
+        {
+            Vector2 axis = stickInput.action.ReadValue<Vector2>();
+            float now = Time.unscaledTime;
+            int maxIdx = 3; // 0:Master, 1:BGM, 2:SFX, 3:닫기
+
+            // 위/아래
+            if (Mathf.Abs(axis.y) > 0.6f && now - soundPopupLastInputTime > soundPopupInputBufferTime)
+            {
+                int dir = (axis.y > 0) ? -1 : 1;
+                soundPopupSelection += dir;
+                soundPopupSelection = Mathf.Clamp(soundPopupSelection, 0, maxIdx);
+                soundPopupLastInputTime = now;
+                UpdateSoundPopupHighlight();
+            }
+            // 슬라이더 조정 (0~2만)
+            if (soundPopupSelection <= 2 && Mathf.Abs(axis.x) > 0.2f)
+            {
+                Slider[] sliders = { masterSlider, bgmSlider, sfxSlider };
+                float newValue = sliders[soundPopupSelection].value + axis.x * sliderSensitivity * Time.unscaledDeltaTime;
+                sliders[soundPopupSelection].value = Mathf.Clamp01(newValue);
+            }
+            return;
+        }
+
+        // 3. 메인 메뉴
         Vector2 axisMenu = stickInput.action.ReadValue<Vector2>();
         float nowMenu = Time.unscaledTime;
+        int menuMax = 2; // 0:Sound, 1:Continue, 2:Exit
 
-        // 위/아래 입력 처리 (선택 이동)
         if (Mathf.Abs(axisMenu.y) > 0.6f && nowMenu - lastInputTime > inputBufferTime)
         {
             int dir = (axisMenu.y > 0) ? -1 : 1;
             int idx = (int)currentSelection + dir;
-            idx = Mathf.Clamp(idx, 0, 2); // 0~2
+            idx = Mathf.Clamp(idx, 0, menuMax);
             currentSelection = (MenuItem)idx;
             lastInputTime = nowMenu;
-            UpdateHighlight();
-        }
-
-        // 슬라이더 조정 (슬라이더 선택 중)
-        if (currentSelection == MenuItem.Slider && Mathf.Abs(axisMenu.x) > 0.2f)
-        {
-            float newValue = targetSlider.value + axisMenu.x * sliderSensitivity * Time.unscaledDeltaTime;
-            targetSlider.value = Mathf.Clamp01(newValue);
+            UpdateMenuHighlight();
         }
     }
 
-    void UpdateHighlight()
+    // ---------- 메뉴팝업 하이라이트 ----------
+    void UpdateMenuHighlight()
     {
-        // 하이라이트 갱신 (메인 메뉴)
-        txtSliderLabel.color = (currentSelection == MenuItem.Slider) ? sliderHighlightColor : normalColor;
+        // "음량조절" 하이라이트
+        txtSound.color = (currentSelection == MenuItem.Sound) ? highlightColor : normalColor;
         txtContinue.color = (currentSelection == MenuItem.Continue) ? highlightColor : normalColor;
         txtExit.color = (currentSelection == MenuItem.Exit) ? highlightColor : normalColor;
-
-        // 슬라이더 핸들 색상도 바꿔줄 수 있음 (Image 필요)
-        var handle = targetSlider.handleRect?.GetComponent<Image>();
-        if (handle != null)
-            handle.color = (currentSelection == MenuItem.Slider) ? sliderHighlightColor : normalColor;
     }
 
+    // ---------- 사운드팝업 하이라이트 ----------
+    void UpdateSoundPopupHighlight()
+    {
+        // 전체 normal
+
+        masterLabel.color = normalColor;
+        bgmLabel.color = normalColor;
+        sfxLabel.color = normalColor;
+        closeText.color = normalColor;
+
+        masterSlider.handleRect.GetComponent<Image>().color = normalColor;
+        bgmSlider.handleRect.GetComponent<Image>().color = normalColor;
+        sfxSlider.handleRect.GetComponent<Image>().color = normalColor;
+
+        // 현재 인덱스만 highlight
+        switch ((SoundPopupItem)soundPopupSelection)
+        {
+            case SoundPopupItem.Master:
+                masterLabel.color = sliderHighlightColor;
+                masterSlider.handleRect.GetComponent<Image>().color = sliderHighlightColor;
+                break;
+            case SoundPopupItem.BGM:
+                bgmLabel.color = sliderHighlightColor;
+                bgmSlider.handleRect.GetComponent<Image>().color = sliderHighlightColor;
+                break;
+            case SoundPopupItem.SFX:
+                sfxLabel.color = sliderHighlightColor;
+                sfxSlider.handleRect.GetComponent<Image>().color = sliderHighlightColor;
+                break;
+            case SoundPopupItem.Close:
+                closeText.color = highlightColor;
+                break;
+        }
+    }
+
+    // ---------- 게임종료팝업 하이라이트 ----------
     void UpdateExitPopupHighlight()
     {
-        // 팝업 내 텍스트 하이라이트
         if (exitPopupContinueText != null)
             exitPopupContinueText.color = (exitPopupSelection == ExitPopupMenu.Continue) ? highlightColor : normalColor;
         if (exitPopupEndGameText != null)
             exitPopupEndGameText.color = (exitPopupSelection == ExitPopupMenu.Exit) ? highlightColor : normalColor;
     }
 
+    // ---------- 트리거 처리 ----------
     void OnTriggerClick(InputAction.CallbackContext ctx)
     {
         if (!isPaused) return;
 
-        // ----- 팝업이 켜진 경우 -----
+        // 사운드팝업
+        if (isSoundPopupActive)
+        {
+            if (soundPopupSelection == 3) // "닫기"
+            {
+                CloseSoundPopup();
+            }
+            return;
+        }
+        // 게임종료팝업
         if (isExitPopupActive)
         {
             switch (exitPopupSelection)
             {
-                case ExitPopupMenu.Continue:
-                    CloseExitPopup();
-                    break;
-                case ExitPopupMenu.Exit:
-                    ExitGame();
-                    break;
+                case ExitPopupMenu.Continue: CloseExitPopup(); break;
+                case ExitPopupMenu.Exit: ExitGame(); break;
             }
             return;
         }
-
-        // ----- 메인 메뉴 트리거 처리 -----
+        // 메뉴팝업
         switch (currentSelection)
         {
-            case MenuItem.Slider:
-                // 필요하면 효과음 등만
-                break;
-            case MenuItem.Continue:
-                Debug.Log("계속!");
-                ClosePopup();
-                break;
-            case MenuItem.Exit:
-                Debug.Log("끝내기! (팝업오픈)");
-                OpenExitPopup();
-                break;
+            case MenuItem.Sound: OpenSoundPopup(); break;
+            case MenuItem.Continue: ClosePopup(); break;
+            case MenuItem.Exit: OpenExitPopup(); break;
         }
     }
 
@@ -213,65 +264,77 @@ public class MenuPopup : MonoBehaviour
         else OpenPopup();
     }
 
+    // ---------- 팝업 열고닫기 ----------
     public void OpenPopup()
     {
         popupPanel.SetActive(true);
         MoveToCameraFront();
         Time.timeScale = 0;
         isPaused = true;
-        currentSelection = MenuItem.Slider;
-        UpdateHighlight();
+        currentSelection = MenuItem.Sound;
+        UpdateMenuHighlight();
     }
     public void ClosePopup()
     {
         popupPanel.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
-
-        // === 팝업이 켜져있으면 강제 Off & 상태 초기화 ===
         if (isExitPopupActive)
         {
             exitPopupPanel.SetActive(false);
             isExitPopupActive = false;
         }
-        // 메인 메뉴 커서도 리셋(원한다면)
-        currentSelection = MenuItem.Slider;
-        UpdateHighlight();
+        if (isSoundPopupActive)
+        {
+            soundPopupPanel.SetActive(false);
+            isSoundPopupActive = false;
+        }
+        currentSelection = MenuItem.Sound;
+        UpdateMenuHighlight();
     }
-
-    // "게임종료" 버튼에서 연결
     public void OpenExitPopup()
     {
         exitPopupPanel.SetActive(true);
         isExitPopupActive = true;
-        exitPopupSelection = ExitPopupMenu.Continue; // 무조건 첫 번째로
+        exitPopupSelection = ExitPopupMenu.Continue;
         UpdateExitPopupHighlight();
     }
-
-    // 팝업 "계속" 버튼에서 연결
     public void CloseExitPopup()
     {
         exitPopupPanel.SetActive(false);
         isExitPopupActive = false;
     }
-
-    // 팝업 "게임종료" 버튼에서 연결
     public void ExitGame()
     {
         Debug.Log("게임 종료합니다");
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // Editor에서 Play모드 종료
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
-    Application.Quit(); // 빌드/실행파일에서 게임 종료
+        Application.Quit();
 #endif
-
     }
+
+    // ---------- 사운드팝업 열고닫기 ----------
+    public void OpenSoundPopup()
+    {
+        if (soundPopupPanel != null)
+            soundPopupPanel.SetActive(true);
+        isSoundPopupActive = true;
+        soundPopupSelection = 0;
+        UpdateSoundPopupHighlight();
+    }
+    public void CloseSoundPopup()
+    {
+        if (soundPopupPanel != null)
+            soundPopupPanel.SetActive(false);
+        isSoundPopupActive = false;
+    }
+
     void MoveToCameraFront()
     {
         if (xrCamera == null)
             xrCamera = FindXRCamera();
-        if (xrCamera == null) return; // 예외 방지
-
+        if (xrCamera == null) return;
         popupPanel.transform.position = xrCamera.position + xrCamera.forward * popupDistance;
         popupPanel.transform.rotation = Quaternion.LookRotation(xrCamera.forward, xrCamera.up);
     }
