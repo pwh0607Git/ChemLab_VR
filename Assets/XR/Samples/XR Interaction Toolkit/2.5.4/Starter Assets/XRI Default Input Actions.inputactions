@@ -707,6 +707,28 @@
                     "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "90ba6778-00f3-4ab4-91b8-35db51dc6169",
+                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>{LeftHand}/{MenuButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "714f886c-c833-4a27-aec6-7cf1f20388fb",
+                    "path": "<OculusTouchController>{LeftHand}/{MenuButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -826,6 +848,15 @@
                     "name": "ResetButton",
                     "type": "Button",
                     "id": "f0001af4-f9e0-46b9-8fd7-8c4e6ceafdd2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "menu",
+                    "type": "Button",
+                    "id": "5a0f70f2-47fe-4294-a862-a3c8321331e9",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -1039,6 +1070,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "ResetButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "96e00215-6454-4cc5-aec4-6033abfba68c",
+                    "path": "<XRSimulatedController>{LeftHand}/menuButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d2c58910-4486-48a8-a97c-2777a727f598",
+                    "path": "<OculusTouchController>{LeftHand}/{MenuButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
