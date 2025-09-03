@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public enum BGMTrackName
 {
@@ -188,7 +189,6 @@ public class SoundManager : MonoBehaviour
             isPlaying = av >= bv;
         }
     }
-
 
     private IEnumerator Crossfade(AudioClip newClip, bool loop)
     {
