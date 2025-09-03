@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5286968164493735485}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -44,9 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58683ed73657eaf46bfb7cf06216a1d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicTracks: []
+  musicTracks:
+  - trackName: 1
+    audioClip: {fileID: 8300000, guid: ba1d52700ecb78b4989c665a32261f70, type: 3}
+  - trackName: 2
+    audioClip: {fileID: 8300000, guid: 60d5df4f2f677774ca7e7b1694b45e7a, type: 3}
+  - trackName: 3
+    audioClip: {fileID: 8300000, guid: 85bb14331ea63244bbf08b89417e0041, type: 3}
+  - trackName: 4
+    audioClip: {fileID: 8300000, guid: 85bb14331ea63244bbf08b89417e0041, type: 3}
   bgmMixerGroup: {fileID: -8966231354032007597, guid: 8161847cae780fd418d883c1724c64cf, type: 2}
   crossfadeDuration: 1.5
   sfxMixerGroup: {fileID: 7271272388459734831, guid: 8161847cae780fd418d883c1724c64cf, type: 2}
+  sfxMinDistance: 1
+  sfxMaxDistance: 20
+  sfxRolloff: 1
   sfxInitialPool: 8
   sfx2D: 0
