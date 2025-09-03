@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 
 public enum BGMTrackName
 {
     None = 0,
-    Lobby,
+    StartGame,
     Tutorial,
-    Indoor,
-    Lunch,
-    Outdoor
+    Volcano,
+    Chemical,
 }
 
 [System.Serializable]
@@ -84,6 +84,8 @@ public class SoundManager : MonoBehaviour
         bgmB.outputAudioMixerGroup = bgmMixerGroup;
         bgmA.playOnAwake = false;
         bgmB.playOnAwake = false;
+        bgmA.ignoreListenerPause = true;
+        bgmB.ignoreListenerPause = true;
 
         // (호환용) 단일 SFX 소스 - 더 이상 쓰지 않음
         sfxSource = gameObject.AddComponent<AudioSource>();
@@ -112,6 +114,38 @@ public class SoundManager : MonoBehaviour
         return src;
     }
 
+    private void Start()
+    {
+        PlayBGM(BGMTrackName.StartGame);
+    }
+
+    private void OnEnable() { SceneManager.sceneLoaded += OnSceneLoaded; }
+
+    private void OnDisable()
+    { SceneManager.sceneLoaded -= OnSceneLoaded; }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        switch (scene.name)
+        {
+            case "Scn.StartGame":
+                PlayBGM(BGMTrackName.StartGame);
+                break;
+            case "Scn.Tutoral":
+                PlayBGM(BGMTrackName.Tutorial);
+                break;
+            case "Scn.Volcano":
+                PlayBGM(BGMTrackName.Volcano);
+                break;
+            case "Scn.Chemical":
+                PlayBGM(BGMTrackName.Chemical);
+                break;
+            default:
+                PlayBGM(BGMTrackName.None);
+                break;
+        }
+    }
+
     private AudioSource RentSfxSource()
     {
         // 재생 중이 아닌 소스 우선
@@ -127,43 +161,69 @@ public class SoundManager : MonoBehaviour
         return extra;
     }
 
-    // BGM API 기존 그대로
     public void PlayBGM(BGMTrackName trackName, bool loop = true)
     {
-        if (!musicClipDict.ContainsKey(trackName) || musicClipDict[trackName] == null) return;
+        if (!musicClipDict.TryGetValue(trackName, out var clipToPlay) || clipToPlay == null) return;
 
-        AudioClip clipToPlay = musicClipDict[trackName];
-        AudioSource currentSource = isPlaying ? bgmA : bgmB;
-        if (currentSource.isPlaying && currentSource.clip == clipToPlay) return;
+        // 양쪽 소스 모두 확인
+        if ((bgmA && bgmA.isPlaying && bgmA.clip == clipToPlay) ||
+            (bgmB && bgmB.isPlaying && bgmB.clip == clipToPlay))
+            return;
 
         StopAllCoroutines();
+        NormalizeBgmState(); // 추가
         StartCoroutine(Crossfade(clipToPlay, loop));
     }
 
+    private void NormalizeBgmState()
+    {
+        bool a = bgmA && bgmA.isPlaying && bgmA.clip != null;
+        bool b = bgmB && bgmB.isPlaying && bgmB.clip != null;
+        if (a && !b) isPlaying = true;
+        else if (!a && b) isPlaying = false;
+        else
+        {
+            float av = bgmA ? bgmA.volume : 0f;
+            float bv = bgmB ? bgmB.volume : 0f;
+            isPlaying = av >= bv;
+        }
+    }
+
+
     private IEnumerator Crossfade(AudioClip newClip, bool loop)
     {
-        AudioSource activeSource = isPlaying ? bgmA : bgmB;
-        AudioSource inactiveSource = isPlaying ? bgmB : bgmA;
+        var from = isPlaying ? bgmA : bgmB;
+        var to = isPlaying ? bgmB : bgmA;
 
-        inactiveSource.clip = newClip;
-        inactiveSource.loop = loop;
-        inactiveSource.volume = 0;
-        inactiveSource.Play();
+        float fromStart = (from && from.isPlaying) ? from.volume : 1f; // 실제 현재값 사용
+        float toStart = 0f;
 
-        float timer = 0f;
-        while (timer < crossfadeDuration)
+        to.clip = newClip;
+        to.loop = loop;
+        to.volume = toStart;
+        to.Play();
+
+        float t = 0f;
+        while (t < crossfadeDuration)
         {
-            timer += Time.unscaledDeltaTime;
-            float progress = Mathf.Clamp01(timer / crossfadeDuration);
-            activeSource.volume = Mathf.Lerp(1, 0, progress);
-            inactiveSource.volume = Mathf.Lerp(0, 1, progress);
-            yield return new WaitForEndOfFrame();
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.Clamp01(t / crossfadeDuration);
+
+            // equal-power: 중앙에서 덜 꺼지고 덜 붕
+            float a = Mathf.Cos(k * Mathf.PI * 0.5f);
+            float b = Mathf.Sin(k * Mathf.PI * 0.5f);
+
+            if (from) from.volume = a * fromStart;
+            to.volume = Mathf.Lerp(toStart, 1f, b);
+
+            yield return null;
         }
-        activeSource.Stop();
-        activeSource.clip = null;
-        inactiveSource.volume = 1;
+
+        if (from) { from.Stop(); from.clip = null; from.volume = 1f; }
+        to.volume = 1f;
         isPlaying = !isPlaying;
     }
+
 
     // SFX API
     /// <summary>
