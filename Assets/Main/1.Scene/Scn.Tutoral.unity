@@ -1716,9 +1716,17 @@ PrefabInstance:
       propertyPath: m_BackGroundColor.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 96524611752000447, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 1228642719641911104, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
       propertyPath: m_CameraYOffset
-      value: 1.5
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1228642719641911104, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
+      propertyPath: m_RequestedTrackingOriginMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2562449706153295575, guid: 5b70aae33b0051b4a821e3a45b215a79, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5418,7 +5426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf54720a81825cf4484056e0d68fb492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heap: {fileID: 0}
+  heap: {fileID: 1436456462602499832}
   secondsForFull: 5
   radiusRange: {x: 0.05, y: 0.1}
   heightRange: {x: 0.01, y: 0.02}
