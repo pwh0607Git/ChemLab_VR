@@ -331,7 +331,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &5961923944145406021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,8 +378,8 @@ MonoBehaviour:
   txtExit: {fileID: 1128441574981238275}
   exitPopupContinueText: {fileID: 3414020148769264083}
   exitPopupEndGameText: {fileID: 162389029974402690}
-  stickInput: {fileID: 8275859971367427353, guid: 0be0028c24f2a4c14a96b6aa39055933, type: 3}
-  triggerClickR: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  stickInput: {fileID: -7967456002180160679, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  triggerClickR: {fileID: 275645224276447742, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   btnMenu: {fileID: -2391875104136732214, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   highlightColor: {r: 0, g: 1, b: 0, a: 1}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -494,7 +494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1962581590606738951
 RectTransform:
   m_ObjectHideFlags: 0
@@ -872,7 +872,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5135084935559261590
 RectTransform:
   m_ObjectHideFlags: 0
