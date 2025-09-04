@@ -9,6 +9,10 @@ using Unity.XR.CoreUtils;
 public class MenuPopup : MonoBehaviour
 {
     [SerializeField] Transform xrCamera;
+    [SerializeField] private InputActionAsset inputActions; // 프로젝트의 Input Actions 에셋 drag
+    const string MAP_LH_LOCO = "XRI LeftHand Locomotion";
+    const string MAP_RH_LOCO = "XRI RightHand Locomotion";
+
     public float popupDistance = 2.0f;
     public GameObject popupPanel;
     public GameObject exitPopupPanel;
@@ -66,10 +70,15 @@ public class MenuPopup : MonoBehaviour
     bool isExitPopupActive = false;
     bool isSoundPopupActive = false;
 
+
+    XRInput input;
+
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+
+        input = new XRInput();
     }
     void OnDestroy()
     {
@@ -264,20 +273,37 @@ public class MenuPopup : MonoBehaviour
         else OpenPopup();
     }
 
+    // 유틸
+    void SetLocomotionEnabled(bool enabled)
+    {
+        if (!inputActions) return;
+        var lh = inputActions.FindActionMap(MAP_LH_LOCO, throwIfNotFound: false);
+        var rh = inputActions.FindActionMap(MAP_RH_LOCO, throwIfNotFound: false);
+        if (lh != null) { if (enabled) lh.Enable(); else lh.Disable(); }
+        if (rh != null) { if (enabled) rh.Enable(); else rh.Disable(); }
+    }
+
+
     // ---------- 팝업 열고닫기 ----------
     public void OpenPopup()
     {
         popupPanel.SetActive(true);
         MoveToCameraFront();
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         isPaused = true;
+
+        // UI만 켜고 로코모션 끄기
+        input.XRIUI.Enable();
+        SetLocomotionEnabled(false);
+
         currentSelection = MenuItem.Sound;
         UpdateMenuHighlight();
+        
     }
     public void ClosePopup()
     {
         popupPanel.SetActive(false);
-        Time.timeScale = 1;
+        //Time.timeScale = 1;
         isPaused = false;
         if (isExitPopupActive)
         {
@@ -291,6 +317,10 @@ public class MenuPopup : MonoBehaviour
         }
         currentSelection = MenuItem.Sound;
         UpdateMenuHighlight();
+
+        // 로코모션 다시 켜기, UI 끄기
+        SetLocomotionEnabled(true);
+        input.XRIUI.Disable();
     }
     public void OpenExitPopup()
     {
