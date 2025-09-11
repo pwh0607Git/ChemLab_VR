@@ -33,14 +33,14 @@ public class ExperimentManager : BehaviourSingleton<ExperimentManager>
 
     private void Awake()
     {
-        // ✅ 혹시라도 null이면 복구
+        //  혹시라도 null이면 복구
         if (cachedData_ClockReaction == null)
             cachedData_ClockReaction = new List<ClockReactionCase>();
     }
 
     private void OnValidate()
     {
-        // ✅ 에디터에서 Serialize 유지하며 null 방지
+        //  에디터에서 Serialize 유지하며 null 방지
         if (cachedData_ClockReaction == null)
             cachedData_ClockReaction = new List<ClockReactionCase>();
     }
@@ -52,11 +52,11 @@ public class ExperimentManager : BehaviourSingleton<ExperimentManager>
     {
         if (informs == null || informs.Count == 0) return;
 
-        // ✅ 리스트가 혹시라도 비어있으면 다시 보호
+        //  리스트가 혹시라도 비어있으면 다시 보호
         if (cachedData_ClockReaction == null)
             cachedData_ClockReaction = new List<ClockReactionCase>();
 
-        // ✅ 깊은 복사 형태로 케이스 구성
+        //  깊은 복사 형태로 케이스 구성
         var case1 = new ClockReactionCase();
         foreach (var i in informs)
         {
